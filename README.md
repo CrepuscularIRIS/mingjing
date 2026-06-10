@@ -190,3 +190,9 @@ screenshots, Codex review-gate config), see
 - `docs/deployment.md` — env vars, live vs cache mode, SSRF/robots posture
 - `docs/ROADMAP.md` — deferred items and honest pending-human tasks
 - `docs/judge-qa.md` — prepared answers to judge questions
+
+---
+
+## License
+
+Released under the [MIT License](LICENSE) © 2026 CrepuscularIRIS (MingJing).
