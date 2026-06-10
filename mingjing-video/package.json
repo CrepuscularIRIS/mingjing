@@ -1,0 +1,25 @@
+{
+  "name": "mingjing-video",
+  "version": "0.1.0",
+  "private": true,
+  "description": "MingJing (明镜) product explainer / launch film — programmatic video built with Remotion. Mirrors the MingJing frontend design system. Renders MP4 directly; no live API calls.",
+  "scripts": {
+    "dev": "remotion studio",
+    "studio": "remotion studio",
+    "render": "remotion render MingJingLaunch out/mingjing-launch.mp4 --codec=h264",
+    "still": "remotion still MingJingLaunch out/title.png --frame=40",
+    "upgrade": "remotion upgrade"
+  },
+  "dependencies": {
+    "@remotion/google-fonts": "^4.0.0",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "remotion": "^4.0.0"
+  },
+  "devDependencies": {
+    "@remotion/cli": "^4.0.0",
+    "@types/react": "^19.0.0",
+    "@types/react-dom": "^19.0.0",
+    "typescript": "^5.6.0"
+  }
+}
