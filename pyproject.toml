@@ -1,0 +1,53 @@
+[project]
+name = "mingjing"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+authors = [
+    { name = "AutoPilot", email = "autopilot@example.local" }
+]
+requires-python = ">=3.12"
+dependencies = [
+    "beautifulsoup4>=4.14.3",
+    "duckduckgo-search>=8.1.1",
+    "fastapi>=0.136.3",
+    "langgraph>=1.2.2",
+    "openai>=2.38.0",
+    "pydantic>=2",
+    "requests>=2.34.2",
+    "uvicorn>=0.48.0",
+]
+
+[build-system]
+requires = ["uv_build>=0.11.7,<0.12.0"]
+build-backend = "uv_build"
+
+[dependency-groups]
+dev = [
+    "httpx>=0.28",
+    "pytest>=9.0.3",
+]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+markers = [
+    "slow: integration/slow tests",
+]
+
+[tool.ruff]
+line-length = 100
+target-version = "py312"
+
+[tool.ruff.lint]
+# E/W: pycodestyle, F: pyflakes, I: isort, UP: pyupgrade, B: flake8-bugbear.
+select = ["E", "W", "F", "I", "UP", "B"]
+# E501 (line-too-long) is a formatter concern, not a correctness one. Many test
+# fixtures embed verbatim JSON/LLM payloads that must not be rewrapped, so we
+# keep `E` enabled (E402/E702 etc. stay enforced) but defer line wrapping.
+ignore = ["E501"]
+
+[tool.ruff.lint.per-file-ignores]
+# UP042 would rewrite `IssueCode(str, Enum)` to `StrEnum`, but that changes how
+# members render under `str()`/f-strings, which feeds JSON/DB serialization.
+# The mixed (str, Enum) base is deliberate and behavior-load-bearing.
+"src/mingjing/schemas.py" = ["UP042"]

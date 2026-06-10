@@ -1,0 +1,26 @@
+# Backend build context (repo root). Keep the image lean and secret-free.
+.git
+.gitignore
+.dockerignore
+**/__pycache__/
+**/*.pyc
+.venv/
+.pytest_cache/
+.coverage
+htmlcov/
+*.egg-info/
+src/*.egg-info/
+
+# Frontend is built by frontend/Dockerfile (its own context).
+frontend/
+
+# Never ship secrets or local runtime state.
+.env
+.env.*
+data/*.db
+data/**/*.db
+*.log
+
+# Heavy docs assets not needed at runtime.
+docs/presentation/*.pdf
+docs/qa/*.png

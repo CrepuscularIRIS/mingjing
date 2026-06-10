@@ -1,0 +1,219 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>明镜 MingJing · Evidence War Room · 封面</title>
+<style>
+  /* ============================================================
+     MingJing — Evidence-Admissible CI Runtime · cover
+     Original command-center visual system (deep navy + blue/cyan/violet).
+     Brix dark-dashboard used as LOOSE genre reference only — no asset/layout
+     copying; all structure, tokens, components, and copy are original.
+     ============================================================ */
+  :root{
+    --bg:#080c16; --bg2:#0b1120; --surface:#0f1828; --surface2:#13203a; --border:#1d2a42; --border2:#27374f;
+    --ink:#eef3fb; --muted:#9fb0ca; --dim:#8a98b3;
+    --blue:#3b82f6; --cyan:#22d3ee; --violet:#8b5cf6; --indigo:#6366f1;
+    --strong:#34d399; --moderate:#818cf8; --weak:#fbbf24; --reject:#fb7185;
+    --mono:'JetBrains Mono','SFMono-Regular',ui-monospace,Menlo,monospace;
+    --sans:'Inter','Segoe UI',system-ui,'Microsoft YaHei',sans-serif;
+    --serif:'Source Serif 4','Songti SC',Georgia,serif;
+    --grad:linear-gradient(100deg,var(--cyan),var(--blue) 45%,var(--violet));
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:#05080f;color:var(--ink);font-family:var(--sans);min-height:100vh;display:grid;place-items:center;padding:4vmin}
+
+  .poster{position:relative;width:min(1280px,96vw);aspect-ratio:16/10;border:1px solid var(--border);border-radius:22px;overflow:hidden;
+    background:
+      radial-gradient(82% 60% at 88% -6%,rgba(34,211,238,.16),transparent 60%),
+      radial-gradient(70% 70% at -8% 108%,rgba(139,92,246,.16),transparent 60%),
+      radial-gradient(50% 50% at 50% 50%,rgba(59,130,246,.05),transparent 70%),
+      linear-gradient(180deg,var(--bg2),var(--bg));
+    box-shadow:0 50px 140px -50px rgba(0,0,0,.85), inset 0 1px 0 rgba(255,255,255,.04)}
+  .poster::before{content:"";position:absolute;inset:0;opacity:.5;pointer-events:none;
+    background-image:radial-gradient(rgba(120,150,200,.10) 1px,transparent 1px);background-size:26px 26px;mask-image:linear-gradient(180deg,#000,transparent 92%)}
+  /* top hairline accent */
+  .poster::after{content:"";position:absolute;top:0;left:0;right:0;height:2px;background:var(--grad);opacity:.85}
+
+  .inner{position:relative;height:100%;padding:4.4% 4.8%;display:grid;grid-template-rows:auto 1fr auto;gap:2.4%}
+
+  /* ---- top bar ---- */
+  .top{display:flex;justify-content:space-between;align-items:flex-start}
+  .brand{display:flex;align-items:center;gap:14px}
+  .logo{width:46px;height:46px;border-radius:13px;background:linear-gradient(150deg,#0e1b30,#0a1322);border:1px solid var(--border2);display:grid;place-items:center;box-shadow:inset 0 1px 0 rgba(255,255,255,.06)}
+  .logo svg{width:27px;height:27px}
+  .brand .nm{font-family:var(--serif);font-weight:600;font-size:25px;line-height:1.05}
+  .brand .sub{font-size:11.5px;color:var(--dim);margin-top:3px;letter-spacing:.03em}
+  .eyebrow{font-family:var(--mono);font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--cyan);
+    border:1px solid var(--border2);border-radius:999px;padding:6px 12px;background:rgba(34,211,238,.05)}
+
+  /* ---- center: narrative rail | hero dashboard | proof panel ---- */
+  .stage{display:grid;grid-template-columns:1.05fr 1.5fr 1fr;gap:18px;min-height:0}
+  .col{display:flex;flex-direction:column;min-width:0}
+  .glass{background:linear-gradient(180deg,rgba(20,32,56,.55),rgba(13,20,35,.5));border:1px solid var(--border);border-radius:15px;
+    box-shadow:inset 0 1px 0 rgba(255,255,255,.04),0 18px 40px -28px rgba(0,0,0,.7)}
+
+  /* left narrative rail */
+  .rail{justify-content:center;gap:14px}
+  .kicker{font-family:var(--mono);font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--violet)}
+  h1{font-family:var(--serif);font-weight:600;font-size:clamp(26px,3.3vw,44px);line-height:1.07;letter-spacing:-.01em}
+  h1 .g{background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent}
+  .thesis{font-family:var(--mono);font-size:12.5px;line-height:1.6;color:var(--muted);border-left:2px solid var(--blue);padding:4px 0 4px 12px}
+
+  /* center hero dashboard mockup */
+  .hero{padding:16px 18px;gap:14px;display:flex;flex-direction:column;justify-content:center}
+  .hero-head{display:flex;justify-content:space-between;align-items:center;font-family:var(--mono);font-size:10.5px;color:var(--dim);letter-spacing:.08em;text-transform:uppercase}
+  .live{display:inline-flex;align-items:center;gap:6px;color:var(--strong)}
+  .live i{width:7px;height:7px;border-radius:50%;background:var(--strong);box-shadow:0 0 8px var(--strong);display:inline-block}
+  .heroN{display:flex;align-items:baseline;gap:10px}
+  .heroN .big{font-family:var(--mono);font-weight:700;font-size:clamp(52px,8.5vw,104px);line-height:.88;letter-spacing:-.02em;
+    background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent}
+  .heroN .up{color:var(--cyan);font-size:26px}
+  .heroN .cap{font-family:var(--mono);font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.1em}
+  /* QA reject→pass timeline */
+  .tl{display:flex;align-items:center;gap:8px;font-family:var(--mono);font-size:11px;flex-wrap:wrap}
+  .pill{border:1px solid var(--border2);border-radius:8px;padding:5px 9px;display:inline-flex;align-items:center;gap:6px;background:rgba(255,255,255,.015)}
+  .pill.weak{color:var(--weak);border-color:rgba(251,191,36,.4)}
+  .pill.mod{color:var(--moderate);border-color:rgba(129,140,248,.45)}
+  .pill.rej{color:var(--reject)}
+  .arrow{color:var(--dim)}
+  /* gradient area chart — credibility climbing across QA rounds (Dashbrd-X signature) */
+  .chart{position:relative;height:58px;margin:2px 0}
+  .chart svg{width:100%;height:100%;display:block;overflow:visible}
+  .chart .axis{display:flex;justify-content:space-between;font-family:var(--mono);font-size:8.5px;color:var(--dim);letter-spacing:.06em;margin-top:3px}
+  /* kpi strip — big number + delta chip, hairline dividers */
+  .kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:0;border:1px solid var(--border);border-radius:10px;overflow:hidden;background:rgba(8,13,24,.5)}
+  .kpi{padding:9px 6px 8px;text-align:center;border-left:1px solid var(--border)}
+  .kpi:first-child{border-left:0}
+  .kpi b{display:inline-flex;align-items:baseline;gap:4px;font-family:var(--mono);font-weight:700;font-size:19px;color:var(--ink)}
+  .kpi b em{font-style:normal;font-size:10px;color:var(--strong)}
+  .kpi span{display:block;margin-top:2px;font-size:10px;color:var(--dim);letter-spacing:.04em}
+
+  /* right proof panel */
+  .proof{padding:14px;gap:11px;display:flex;flex-direction:column;justify-content:center}
+  .proof .ph{font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--dim)}
+  .ev{display:flex;align-items:flex-start;gap:9px;font-size:12px;line-height:1.4}
+  .ev .dot{margin-top:5px;width:7px;height:7px;border-radius:2px;flex:0 0 auto}
+  .ev .dot.s{background:var(--strong)} .ev .dot.m{background:var(--moderate)} .ev .dot.c{background:var(--cyan)}
+  .ev b{font-family:var(--mono);font-weight:600}
+  .ev small{color:var(--dim);font-family:var(--mono)}
+  .seal{display:inline-flex;align-items:center;gap:7px;align-self:flex-start;background:rgba(52,211,153,.08);color:var(--strong);
+    border:1px solid rgba(52,211,153,.4);border-radius:999px;padding:6px 13px;font-size:12px;font-weight:600}
+
+  /* ---- bottom: chips + stack ---- */
+  .bottom{display:flex;justify-content:space-between;align-items:flex-end;gap:18px}
+  .chips{display:flex;gap:8px;flex-wrap:wrap;max-width:64%}
+  .chip{font-family:var(--mono);font-size:11px;color:var(--ink);border:1px solid var(--border2);background:rgba(59,130,246,.06);border-radius:8px;padding:6px 11px;display:inline-flex;align-items:center;gap:6px}
+  .chip i{width:6px;height:6px;border-radius:50%;background:var(--grad)}
+  .stack{display:flex;gap:7px;flex-wrap:wrap;justify-content:flex-end;max-width:34%}
+  .stack span{font-family:var(--mono);font-size:10.5px;color:var(--muted);border:1px solid var(--border);border-radius:7px;padding:5px 9px;background:rgba(8,13,24,.4)}
+
+  /* ---- print: single 16:9 page ---- */
+  @media print{
+    @page{size:1920px 1080px;margin:0}
+    html,body{min-height:1080px;padding:0;display:block;background:#05080f}
+    .poster{width:1920px;height:1080px;aspect-ratio:auto;border-radius:0;border:none;box-shadow:none;margin:0}
+    .inner{height:1080px}
+  }
+</style>
+</head>
+<body>
+  <div class="poster">
+    <div class="inner">
+
+      <!-- TOP -->
+      <div class="top">
+        <div class="brand">
+          <span class="logo"><svg viewBox="0 0 28 28" fill="none"><circle cx="14" cy="14" r="11" stroke="#22d3ee" stroke-width="1.8"/><circle cx="14" cy="14" r="4.6" fill="#3b82f6"/><path d="M9 9.2a6 6 0 0 1 4-2.1" stroke="#080c16" stroke-width="1.5" stroke-linecap="round"/></svg></span>
+          <div>
+            <div class="nm">明镜 MingJing</div>
+            <div class="sub">Evidence-Admissible Competitive Intelligence Runtime</div>
+          </div>
+        </div>
+        <div class="eyebrow">字节跳动 CIS · AI 全栈挑战赛</div>
+      </div>
+
+      <!-- CENTER STAGE -->
+      <div class="stage">
+
+        <!-- left narrative rail -->
+        <div class="col rail">
+          <div class="kicker">Verifier-first · 证据驱动</div>
+          <h1>每条结论都<span class="g">可被证明</span>，<br/>而不只是被引用。</h1>
+          <div class="thesis">Let LLMs propose.<br/>Let code adjudicate.<br/>Let evidence decide.</div>
+          <div class="thesis" style="border-color:var(--violet)">Not another deep-research report —<br/>a verifiable competitive-intelligence workflow.</div>
+        </div>
+
+        <!-- center hero dashboard -->
+        <div class="col glass hero">
+          <div class="hero-head">
+            <span>REPAIR_DELTA · 修正增益</span>
+            <span class="live"><i></i>示例运行 4fff4227</span>
+          </div>
+          <div class="heroN">
+            <span class="big">+42%</span><span class="up">▲</span>
+            <span class="cap">弱→中 · 中→强<br/>2→4 来源</span>
+          </div>
+          <!-- credibility-over-rounds area chart (gradient fill) -->
+          <div class="chart">
+            <svg viewBox="0 0 320 58" preserveAspectRatio="none" aria-hidden="true">
+              <defs>
+                <linearGradient id="cg" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0" stop-color="#22d3ee" stop-opacity=".42"/>
+                  <stop offset="1" stop-color="#3b82f6" stop-opacity="0"/>
+                </linearGradient>
+                <linearGradient id="cl" x1="0" y1="0" x2="1" y2="0">
+                  <stop offset="0" stop-color="#22d3ee"/><stop offset="1" stop-color="#8b5cf6"/>
+                </linearGradient>
+              </defs>
+              <path d="M0,46 C60,44 80,40 120,40 C150,40 168,30 200,22 C240,12 270,9 320,6 L320,58 L0,58 Z" fill="url(#cg)"/>
+              <path d="M0,46 C60,44 80,40 120,40 C150,40 168,30 200,22 C240,12 270,9 320,6" fill="none" stroke="url(#cl)" stroke-width="2.2"/>
+              <circle cx="0" cy="46" r="3" fill="#fbbf24"/>
+              <circle cx="120" cy="40" r="3" fill="#fb7185"/>
+              <circle cx="320" cy="6" r="3.4" fill="#818cf8"/>
+            </svg>
+            <div class="axis"><span>R0 · 弱(1)</span><span>QA 打回 · +4 来源</span><span>R1 · 中(5)</span></div>
+          </div>
+          <div class="tl">
+            <span class="pill weak">PASS&nbsp;1 弱(1)</span>
+            <span class="arrow">›</span><span class="pill rej">QA 打回</span>
+            <span class="arrow">›</span><span class="pill">+4 来源</span>
+            <span class="arrow">›</span><span class="pill mod">PASS&nbsp;2 中(5)</span>
+          </div>
+          <div class="kpis">
+            <div class="kpi"><b>80% <em>▲</em></b><span>准入率</span></div>
+            <div class="kpi"><b>100%</b><span>溯源度</span></div>
+            <div class="kpi"><b>4 <em>+4</em></b><span>已验证</span></div>
+            <div class="kpi"><b>4</b><span>QA 轮次</span></div>
+          </div>
+        </div>
+
+        <!-- right proof panel -->
+        <div class="col glass proof">
+          <div class="ph">Evidence ledger · 证据账本</div>
+          <div class="ev"><span class="dot s"></span><div><b>官方 + 调研 双源印证</b><br/><small>linear.app · survey:SV-2 → strong</small></div></div>
+          <div class="ev"><span class="dot m"></span><div><b>Notion 定价 中(5)</b><br/><small>verbatim-grounded · 5 来源</small></div></div>
+          <div class="ev"><span class="dot c"></span><div><b>跨源矛盾自动降档</b><br/><small>contradiction → capped</small></div></div>
+          <span class="seal">✓ 真闭环确认 · LLM 不裁定真值</span>
+        </div>
+      </div>
+
+      <!-- BOTTOM -->
+      <div class="bottom">
+        <div class="chips">
+          <span class="chip"><i></i>Verifier-first</span>
+          <span class="chip"><i></i>Claim-level evidence</span>
+          <span class="chip"><i></i>QA repair delta</span>
+          <span class="chip"><i></i>Traceable sources</span>
+          <span class="chip"><i></i>Non-fake feedback loop</span>
+        </div>
+        <div class="stack">
+          <span>LangGraph</span><span>FastAPI</span><span>React · Vite · TS</span><span>SQLite · WAL</span>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</body>
+</html>

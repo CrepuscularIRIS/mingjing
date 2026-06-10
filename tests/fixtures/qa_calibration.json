@@ -1,0 +1,763 @@
+{
+  "labeled_by": "human-review 2026-06-10",
+  "method": "Each claimset's expected_codes was reasoned by hand from src/mingjing/qa/rules.py and src/mingjing/scoring.py (NOT by running qa_check and copying its output). Default domain schema (domains/default.json): pricing_model.required=[tiers]; user_sentiment.required=[overall]; feature_tree.required=[categories]; user_persona.required=[segments]; swot.required=[strengths,weaknesses,opportunities,threats]. Scoring rule: a source counts as a supporting voice only when its evidence relevance == 'supports'; strong = >=2 distinct registrable domains incl. >=1 authoritative type {official,survey,interview} and no contradiction; moderate = exactly 1 supporting domain, or >=2 all-weak-type domains, or contradiction-capped; weak = zero supporting evidence. A leaf under a required sub-field is value-checked iff string (>=4 chars + >=1 alpha) or non-derived number; it is unsupported when absent from the concatenated cited-source raw_text (case/whitespace-insensitive). SIMULATED sources (source_mode='SIMULATED') are grounding/display-only and contribute nothing to tier/contradiction. COVERAGE_THRESHOLD=0.8.",
+  "cases": [
+    {
+      "id": "CLEAN-01",
+      "description": "干净通过:两独立权威域名(official+survey)均 supports、片段逐字、value 叶子在原文、覆盖率满。无任何 issue。",
+      "expected_codes": [],
+      "claimset": {
+        "claims": [
+          {"id": "C1", "competitor": "A", "schema_field": "pricing_model", "claim_type": "fact", "statement": "Pro tier costs $10/month.", "value": {"tiers": ["Pro tier"]}, "evidence": [
+            {"source_id": "S1", "snippet": "Pro tier costs $10 per month", "relevance": "supports"},
+            {"source_id": "S2", "snippet": "Pro plan at $10 monthly", "relevance": "supports"}
+          ]}
+        ],
+        "sources": {
+          "S1": {"raw_text": "Our official pricing: Pro tier costs $10 per month, billed annually.", "source_type": "official", "url": "https://a.example/pricing"},
+          "S2": {"raw_text": "Survey: respondents report the Pro plan at $10 monthly.", "source_type": "survey", "url": "https://b.example/report"}
+        },
+        "coverage": {"required_fields": ["pricing_model"], "covered_fields": ["pricing_model"]}
+      }
+    },
+    {
+      "id": "CLEAN-02",
+      "description": "干净通过:feature_tree,两独立域名(official+review)均 supports => strong;categories 叶子均在原文。",
+      "expected_codes": [],
+      "claimset": {
+        "claims": [
+          {"id": "C1", "competitor": "Slack", "schema_field": "feature_tree", "claim_type": "fact", "statement": "Messaging and Huddles.", "value": {"categories": ["Messaging", "Huddles"]}, "evidence": [
+            {"source_id": "S1", "snippet": "Messaging and Huddles", "relevance": "supports"},
+            {"source_id": "S2", "snippet": "users mention Messaging and Huddles", "relevance": "supports"}
+          ]}
+        ],
+        "sources": {
+          "S1": {"raw_text": "Slack core features: Messaging and Huddles for teams.", "source_type": "official", "url": "https://slack.example/features"},
+          "S2": {"raw_text": "Reviewers say users mention Messaging and Huddles often.", "source_type": "review", "url": "https://review.example/slack"}
+        },
+        "coverage": {"required_fields": ["feature_tree"], "covered_fields": ["feature_tree"]}
+      }
+    },
+    {
+      "id": "CLEAN-03",
+      "description": "干净通过:user_sentiment,overall='positive' 在原文;两独立权威域名 supports。",
+      "expected_codes": [],
+      "claimset": {
+        "claims": [
+          {"id": "C1", "competitor": "A", "schema_field": "user_sentiment", "claim_type": "fact", "statement": "Overall positive.", "value": {"overall": "positive overall reception"}, "evidence": [
+            {"source_id": "S1", "snippet": "positive overall reception", "relevance": "supports"},
+            {"source_id": "S2", "snippet": "the positive overall reception continues", "relevance": "supports"}
+          ]}
+        ],
+        "sources": {
+          "S1": {"raw_text": "Editors note a positive overall reception of the product.", "source_type": "official", "url": "https://a.example/blog"},
+          "S2": {"raw_text": "Survey shows the positive overall reception continues this year.", "source_type": "survey", "url": "https://c.example/survey"}
+        },
+        "coverage": {"required_fields": ["user_sentiment"], "covered_fields": ["user_sentiment"]}
+      }
+    },
+    {
+      "id": "CLEAN-04",
+      "description": "干净通过:swot 全部四个必填子字段满足且叶子在原文;两权威域名 supports。",
+      "expected_codes": [],
+      "claimset": {
+        "claims": [
+          {"id": "C1", "competitor": "A", "schema_field": "swot", "claim_type": "fact", "statement": "SWOT.", "value": {"strengths": ["strong brand"], "weaknesses": ["limited support"], "opportunities": ["new markets"], "threats": ["rising competition"]}, "evidence": [
+            {"source_id": "S1", "snippet": "strong brand and limited support", "relevance": "supports"},
+            {"source_id": "S2", "snippet": "new markets and rising competition", "relevance": "supports"}
+          ]}
+        ],
+        "sources": {
+          "S1": {"raw_text": "Analysts cite a strong brand and limited support as defining traits.", "source_type": "official", "url": "https://a.example/swot"},
+          "S2": {"raw_text": "Survey: new markets and rising competition shape the outlook.", "source_type": "survey", "url": "https://b.example/swot"}
+        },
+        "coverage": {"required_fields": ["swot"], "covered_fields": ["swot"]}
+      }
+    },
+    {
+      "id": "CLEAN-05",
+      "description": "干净通过:user_persona,segments='Product designers' 与原文小写差异(大小写不敏感)=> 不触发 VALUE_UNSUPPORTED;两权威域名 supports。",
+      "expected_codes": [],
+      "claimset": {
+        "claims": [
+          {"id": "C1", "competitor": "Figma", "schema_field": "user_persona", "claim_type": "fact", "statement": "Built for product designers.", "value": {"segments": ["Product designers"]}, "evidence": [
+            {"source_id": "S1", "snippet": "built for product designers", "relevance": "supports"},
+            {"source_id": "S2", "snippet": "loved by product designers", "relevance": "supports"}
+          ]}
+        ],
+        "sources": {
+          "S1": {"raw_text": "figma is built for product designers and teams.", "source_type": "official", "url": "https://figma.example/about"},
+          "S2": {"raw_text": "Survey: figma is loved by product designers worldwide.", "source_type": "survey", "url": "https://b.example/figma"}
+        },
+        "coverage": {"required_fields": ["user_persona"], "covered_fields": ["user_persona"]}
+      }
+    },
+    {
+      "id": "CLEAN-06",
+      "description": "干净通过:数字必填叶子 count=12 作为整 token 出现在原文(feature_tree.categories 内嵌 dict);两权威域名 supports。",
+      "expected_codes": [],
+      "claimset": {
+        "claims": [
+          {"id": "C1", "competitor": "A", "schema_field": "feature_tree", "claim_type": "fact", "statement": "12 collaboration tools.", "value": {"categories": [{"name": "Collaboration", "count": 12}]}, "evidence": [
+            {"source_id": "S1", "snippet": "Collaboration across 12 tools", "relevance": "supports"},
+            {"source_id": "S2", "snippet": "12 collaboration tools available", "relevance": "supports"}
+          ]}
+        ],
+        "sources": {
+          "S1": {"raw_text": "Collaboration across 12 tools is offered officially.", "source_type": "official", "url": "https://a.example/feat"},
+          "S2": {"raw_text": "Survey confirms 12 collaboration tools available.", "source_type": "survey", "url": "https://b.example/feat"}
+        },
+        "coverage": {"required_fields": ["feature_tree"], "covered_fields": ["feature_tree"]}
+      }
+    },
+    {
+      "id": "CLEAN-07",
+      "description": "干净通过(边界:可选子字段缺失无害):仅必填 tiers 提供,可选 currency/billing_period 缺失不报错;两权威域名 supports。",
+      "expected_codes": [],
+      "claimset": {
+        "claims": [
+          {"id": "C1", "competitor": "A", "schema_field": "pricing_model", "claim_type": "fact", "statement": "Free and Pro.", "value": {"tiers": ["Free", "Pro"]}, "evidence": [
+            {"source_id": "S1", "snippet": "Free and Pro plans", "relevance": "supports"},
+            {"source_id": "S2", "snippet": "the Free and Pro plans", "relevance": "supports"}
+          ]}
+        ],
+        "sources": {
+          "S1": {"raw_text": "We offer Free and Pro plans for everyone.", "source_type": "official", "url": "https://a.example/p"},
+          "S2": {"raw_text": "Survey users list the Free and Pro plans most.", "source_type": "survey", "url": "https://b.example/p"}
+        },
+        "coverage": {"required_fields": ["pricing_model"], "covered_fields": ["pricing_model"]}
+      }
+    },
+    {
+      "id": "CLEAN-08",
+      "description": "干净通过(边界:片段仅空白差异):原文含换行/制表/多空格,片段单空格 => 归一化后仍是子串,不报 HALLUCINATED;两权威域名 supports;value 叶子在原文。",
+      "expected_codes": [],
+      "claimset": {
+        "claims": [
+          {"id": "C1", "competitor": "A", "schema_field": "pricing_model", "claim_type": "fact", "statement": "Pro tier.", "value": {"tiers": ["Pro tier"]}, "evidence": [
+            {"source_id": "S1", "snippet": "Pro tier costs $10 per month", "relevance": "supports"},
+            {"source_id": "S2", "snippet": "the Pro tier at $10", "relevance": "supports"}
+          ]}
+        ],
+        "sources": {
+          "S1": {"raw_text": "Our pricing:\nPro   tier\tcosts   $10\nper month, billed annually.", "source_type": "official", "url": "https://a.example/p"},
+          "S2": {"raw_text": "Users say the Pro tier at $10 monthly.", "source_type": "survey", "url": "https://b.example/p"}
+        },
+        "coverage": {"required_fields": ["pricing_model"], "covered_fields": ["pricing_model"]}
+      }
+    },
+    {
+      "id": "CLEAN-09",
+      "description": "干净通过(边界:覆盖率恰好 0.8):4 必填覆盖 4 => ratio 1.0;但用 5 必填覆盖 4 => 0.8 不小于阈值,故不报 LOW_COVERAGE。单 claim 两权威域名 supports。",
+      "expected_codes": [],
+      "claimset": {
+        "claims": [
+          {"id": "C1", "competitor": "A", "schema_field": "pricing_model", "claim_type": "fact", "statement": "Pro tier.", "value": {"tiers": ["Pro tier"]}, "evidence": [
+            {"source_id": "S1", "snippet": "Pro tier costs $10", "relevance": "supports"},
+            {"source_id": "S2", "snippet": "the Pro tier costs $10", "relevance": "supports"}
+          ]}
+        ],
+        "sources": {
+          "S1": {"raw_text": "Pro tier costs $10 per month officially.", "source_type": "official", "url": "https://a.example/p"},
+          "S2": {"raw_text": "Survey: the Pro tier costs $10 monthly.", "source_type": "survey", "url": "https://b.example/p"}
+        },
+        "coverage": {"required_fields": ["f1", "f2", "f3", "f4", "f5"], "covered_fields": ["f1", "f2", "f3", "f4"]}
+      }
+    },
+    {
+      "id": "CLEAN-10",
+      "description": "干净通过(边界:可选子字段含未在原文的短/数字叶子被忽略):pricing_model 必填 tiers 在原文;可选 currency='USD'(<4 字母,非可查)与 free_tier price=0(数字,VALUE_UNSUPPORTED 只查必填,可选不查)=> 无 issue。两权威域名 supports。",
+      "expected_codes": [],
+      "claimset": {
+        "claims": [
+          {"id": "C1", "competitor": "A", "schema_field": "pricing_model", "claim_type": "fact", "statement": "Free tier.", "value": {"tiers": ["Free tier"], "currency": "USD", "free_tier": {"price": 0}}, "evidence": [
+            {"source_id": "S1", "snippet": "the Free tier", "relevance": "supports"},
+            {"source_id": "S2", "snippet": "a Free tier exists", "relevance": "supports"}
+          ]}
+        ],
+        "sources": {
+          "S1": {"raw_text": "We provide the Free tier to all users.", "source_type": "official", "url": "https://a.example/p"},
+          "S2": {"raw_text": "Survey: a Free tier exists for everyone.", "source_type": "survey", "url": "https://b.example/p"}
+        },
+        "coverage": {"required_fields": ["pricing_model"], "covered_fields": ["pricing_model"]}
+      }
+    },
+    {
+      "id": "SCHEMA_GAP-01",
+      "description": "SCHEMA_GAP:pricing_model 必填子字段 tiers 缺失(value={})。WEAK 不触发,因两权威域名 supports => strong。",
+      "expected_codes": ["SCHEMA_GAP"],
+      "claimset": {
+        "claims": [
+          {"id": "C1", "competitor": "A", "schema_field": "pricing_model", "claim_type": "fact", "statement": "Pro at $10.", "value": {}, "evidence": [
+            {"source_id": "S1", "snippet": "Pro tier costs $10", "relevance": "supports"},
+            {"source_id": "S2", "snippet": "the Pro plan at $10", "relevance": "supports"}
+          ]}
+        ],
+        "sources": {
+          "S1": {"raw_text": "Pro tier costs $10 per month.", "source_type": "official", "url": "https://a.example/p"},
+          "S2": {"raw_text": "Survey: the Pro plan at $10 monthly.", "source_type": "survey", "url": "https://b.example/p"}
+        },
+        "coverage": {"required_fields": ["pricing_model"], "covered_fields": ["pricing_model"]}
+      }
+    },
+    {
+      "id": "SCHEMA_GAP-02",
+      "description": "SCHEMA_GAP:swot 仅给 strengths,缺 weaknesses/opportunities/threats(三个必填空)。两权威域名 supports => 不报 WEAK。",
+      "expected_codes": ["SCHEMA_GAP"],
+      "claimset": {
+        "claims": [
+          {"id": "C1", "competitor": "A", "schema_field": "swot", "claim_type": "fact", "statement": "Has strengths.", "value": {"strengths": ["strong brand"]}, "evidence": [
+            {"source_id": "S1", "snippet": "strong brand", "relevance": "supports"},
+            {"source_id": "S2", "snippet": "a strong brand", "relevance": "supports"}
+          ]}
+        ],
+        "sources": {
+          "S1": {"raw_text": "Analysts cite a strong brand.", "source_type": "official", "url": "https://a.example/s"},
+          "S2": {"raw_text": "Survey: a strong brand stands out.", "source_type": "survey", "url": "https://b.example/s"}
+        },
+        "coverage": {"required_fields": ["swot"], "covered_fields": ["swot"]}
+      }
+    },
+    {
+      "id": "SCHEMA_GAP-03",
+      "description": "SCHEMA_GAP:必填 overall 存在但为空字符串(value 中视作缺失,因 value.get(f) in ('',...))。两权威域名 supports => 不报 WEAK。注意空 overall 无可查叶子 => 不报 VALUE_UNSUPPORTED。",
+      "expected_codes": ["SCHEMA_GAP"],
+      "claimset": {
+        "claims": [
+          {"id": "C1", "competitor": "A", "schema_field": "user_sentiment", "claim_type": "fact", "statement": "Sentiment.", "value": {"overall": ""}, "evidence": [
+            {"source_id": "S1", "snippet": "the product is praised", "relevance": "supports"},
+            {"source_id": "S2", "snippet": "praised by many users", "relevance": "supports"}
+          ]}
+        ],
+        "sources": {
+          "S1": {"raw_text": "Officially the product is praised by editors.", "source_type": "official", "url": "https://a.example/r"},
+          "S2": {"raw_text": "Survey: praised by many users this quarter.", "source_type": "survey", "url": "https://b.example/r"}
+        },
+        "coverage": {"required_fields": ["user_sentiment"], "covered_fields": ["user_sentiment"]}
+      }
+    },
+    {
+      "id": "SCHEMA_GAP-04",
+      "description": "SCHEMA_GAP(inference lineage 完整性):inference 的 based_on 引用了不存在的 claim id 'GHOST' => 触发 SCHEMA_GAP(reason=inference_lineage_unknown)。swot 四必填齐全且在原文,叶子可查通过;evidence 为空(inference 允许)=> 评分 weak? 注意:inference 无 evidence => _evidence_tuples 空 => strength=weak => 也触发 WEAK_EVIDENCE。",
+      "expected_codes": ["SCHEMA_GAP", "WEAK_EVIDENCE"],
+      "claimset": {
+        "claims": [
+          {"id": "I1", "competitor": "X", "schema_field": "swot", "claim_type": "inference", "statement": "Inferred SWOT.", "value": {"strengths": ["inferred edge"], "weaknesses": ["a gap"], "opportunities": ["an opening"], "threats": ["a risk"]}, "based_on": ["GHOST"], "evidence": []}
+        ],
+        "sources": {},
+        "coverage": {"required_fields": [], "covered_fields": []}
+      }
+    },
+    {
+      "id": "WEAK_EVIDENCE-01",
+      "description": "WEAK_EVIDENCE:唯一证据 relevance='unrelated'(非 supports)=> strength 无支持票 => weak。value.overall='mixed feelings' 在原文 => 不报 VALUE_UNSUPPORTED;片段在原文 => 不报 HALLUCINATED。",
+      "expected_codes": ["WEAK_EVIDENCE"],
+      "claimset": {
+        "claims": [
+          {"id": "C1", "competitor": "A", "schema_field": "user_sentiment", "claim_type": "fact", "statement": "Users have mixed feelings.", "value": {"overall": "mixed feelings"}, "evidence": [
+            {"source_id": "S1", "snippet": "mixed feelings reported", "relevance": "unrelated"}
+          ]}
+        ],
+        "sources": {"S1": {"raw_text": "Reviewers had mixed feelings reported about the app.", "source_type": "review", "url": "https://r.example/a"}},
+        "coverage": {"required_fields": ["user_sentiment"], "covered_fields": ["user_sentiment"]}
+      }
+    },
+    {
+      "id": "WEAK_EVIDENCE-02",
+      "description": "WEAK_EVIDENCE:有 evidence 但 relevance='direct'(不是 supports)=> 零支持票 => weak。feature_tree.categories=['Messaging'] 在原文;片段在原文。",
+      "expected_codes": ["WEAK_EVIDENCE"],
+      "claimset": {
+        "claims": [
+          {"id": "C1", "competitor": "A", "schema_field": "feature_tree", "claim_type": "fact", "statement": "Messaging.", "value": {"categories": ["Messaging"]}, "evidence": [
+            {"source_id": "S1", "snippet": "Messaging feature", "relevance": "direct"}
+          ]}
+        ],
+        "sources": {"S1": {"raw_text": "The app ships a Messaging feature.", "source_type": "official", "url": "https://a.example/f"}},
+        "coverage": {"required_fields": ["feature_tree"], "covered_fields": ["feature_tree"]}
+      }
+    },
+    {
+      "id": "WEAK_EVIDENCE-03",
+      "description": "WEAK_EVIDENCE:fact 证据全部来自 SIMULATED 来源(source_mode='SIMULATED')=> contributes_to_tier=False => 评分器看不到任何支持票 => weak。这正是「SIMULATED 不计入档位」铁律。片段在原文(SIMULATED 仍可逐字接地)=> 不报 HALLUCINATED;value.segments 在原文 => 不报 VALUE_UNSUPPORTED。",
+      "expected_codes": ["WEAK_EVIDENCE"],
+      "claimset": {
+        "claims": [
+          {"id": "C1", "competitor": "A", "schema_field": "user_persona", "claim_type": "fact", "statement": "Small teams.", "value": {"segments": ["small teams"]}, "evidence": [
+            {"source_id": "SV1", "snippet": "small teams", "relevance": "supports"},
+            {"source_id": "SV2", "snippet": "many small teams", "relevance": "supports"}
+          ]}
+        ],
+        "sources": {
+          "SV1": {"raw_text": "Interview: small teams adopt it first.", "source_type": "interview", "url": "https://a.example/iv", "source_mode": "SIMULATED"},
+          "SV2": {"raw_text": "Survey: many small teams use it daily.", "source_type": "survey", "url": "https://b.example/sv", "source_mode": "SIMULATED"}
+        },
+        "coverage": {"required_fields": ["user_persona"], "covered_fields": ["user_persona"]}
+      }
+    },
+    {
+      "id": "HALLUCINATED_SNIPPET-01",
+      "description": "HALLUCINATED_SNIPPET:S1 片段 'Pro tier is completely free forever' 不在 S1 原文('costs $10')。S2 片段在原文 + relevance supports;但 S1 片段也 supports 且 S1 在原文中不含该片段 -> 仅 HALLUCINATED。S1 价格相关 value 'Pro tier' 在 S1 原文 => 不报 VALUE_UNSUPPORTED。两域名 supports => strong,不报 WEAK。",
+      "expected_codes": ["HALLUCINATED_SNIPPET"],
+      "claimset": {
+        "claims": [
+          {"id": "C1", "competitor": "A", "schema_field": "pricing_model", "claim_type": "fact", "statement": "Pro tier.", "value": {"tiers": ["Pro tier"]}, "evidence": [
+            {"source_id": "S1", "snippet": "Pro tier is completely free forever", "relevance": "supports"},
+            {"source_id": "S2", "snippet": "the Pro tier at $10", "relevance": "supports"}
+          ]}
+        ],
+        "sources": {
+          "S1": {"raw_text": "Pro tier costs $10 per month, billed annually.", "source_type": "official", "url": "https://a.example/p"},
+          "S2": {"raw_text": "Users say the Pro tier at $10 monthly.", "source_type": "survey", "url": "https://b.example/p"}
+        },
+        "coverage": {"required_fields": ["pricing_model"], "covered_fields": ["pricing_model"]}
+      }
+    },
+    {
+      "id": "HALLUCINATED_SNIPPET-02",
+      "description": "HALLUCINATED_SNIPPET(改写非逐字):片段 'Messaging plus video huddles' 是对原文 'Messaging and Huddles' 的改写,逐字子串检查失败 => 触发。value.categories 叶子('Messaging','Huddles')逐字在原文 => 不报 VALUE_UNSUPPORTED。第二域名片段逐字 supports => 两域名 strong => 不报 WEAK。",
+      "expected_codes": ["HALLUCINATED_SNIPPET"],
+      "claimset": {
+        "claims": [
+          {"id": "C1", "competitor": "A", "schema_field": "feature_tree", "claim_type": "fact", "statement": "Messaging and Huddles.", "value": {"categories": ["Messaging", "Huddles"]}, "evidence": [
+            {"source_id": "S1", "snippet": "Messaging plus video huddles", "relevance": "supports"},
+            {"source_id": "S2", "snippet": "Messaging and Huddles", "relevance": "supports"}
+          ]}
+        ],
+        "sources": {
+          "S1": {"raw_text": "Core features: Messaging and Huddles for teams.", "source_type": "official", "url": "https://a.example/f"},
+          "S2": {"raw_text": "Survey users list Messaging and Huddles.", "source_type": "survey", "url": "https://b.example/f"}
+        },
+        "coverage": {"required_fields": ["feature_tree"], "covered_fields": ["feature_tree"]}
+      }
+    },
+    {
+      "id": "HALLUCINATED_SNIPPET-03",
+      "description": "HALLUCINATED_SNIPPET:cited source_id 'S9' 不存在于 sources => src={} => raw_text='' => 非空片段不是 '' 的子串 => 触发。第二证据 S2 逐字 supports。两条 supports 票但 S9 域名来自 source_id(blank url fallback)与 S2 域名不同 => >=2 域名? S9 source 不存在 => contributes_to_tier({}) True(无 SIMULATED 标记)=> 计为一票(域名=source_id 'S9');S2 official => 两域名其一权威 => strong => 不报 WEAK。value.tiers 在 S2 原文。",
+      "expected_codes": ["HALLUCINATED_SNIPPET"],
+      "claimset": {
+        "claims": [
+          {"id": "C1", "competitor": "A", "schema_field": "pricing_model", "claim_type": "fact", "statement": "Enterprise tier.", "value": {"tiers": ["Enterprise tier"]}, "evidence": [
+            {"source_id": "S9", "snippet": "Enterprise tier with SSO", "relevance": "supports"},
+            {"source_id": "S2", "snippet": "the Enterprise tier", "relevance": "supports"}
+          ]}
+        ],
+        "sources": {
+          "S2": {"raw_text": "We offer the Enterprise tier for large orgs.", "source_type": "official", "url": "https://a.example/p"}
+        },
+        "coverage": {"required_fields": ["pricing_model"], "covered_fields": ["pricing_model"]}
+      }
+    },
+    {
+      "id": "CONTRADICTION-01",
+      "description": "CONTRADICTION(两 claim 同 competitor+field 值不同):C1 tiers=['$10'],C2 tiers=['$25']。两 claim 各自两权威域名 supports => 各自本应 strong,但 contradiction 把它们降到 moderate(不会到 weak)=> 不报 WEAK。每个 claim 的 value 数字 '$10'/'$25' 非可查字符串叶子(无字母被忽略),且 $-前缀;片段逐字在各自原文。两 claim 均被标记 CONTRADICTION。",
+      "expected_codes": ["CONTRADICTION"],
+      "claimset": {
+        "claims": [
+          {"id": "C1", "competitor": "A", "schema_field": "pricing_model", "claim_type": "fact", "statement": "Pro $10.", "value": {"tiers": ["$10"]}, "evidence": [
+            {"source_id": "S1", "snippet": "Pro tier costs $10", "relevance": "supports"},
+            {"source_id": "S2", "snippet": "Pro at $10", "relevance": "supports"}
+          ]},
+          {"id": "C2", "competitor": "A", "schema_field": "pricing_model", "claim_type": "fact", "statement": "Pro $25.", "value": {"tiers": ["$25"]}, "evidence": [
+            {"source_id": "S3", "snippet": "Pro tier costs $25", "relevance": "supports"},
+            {"source_id": "S4", "snippet": "Pro at $25", "relevance": "supports"}
+          ]}
+        ],
+        "sources": {
+          "S1": {"raw_text": "Pro tier costs $10 per month.", "source_type": "official", "url": "https://a.example/p"},
+          "S2": {"raw_text": "Pro at $10 monthly.", "source_type": "survey", "url": "https://b.example/p"},
+          "S3": {"raw_text": "Pro tier costs $25 per month.", "source_type": "official", "url": "https://c.example/p"},
+          "S4": {"raw_text": "Pro at $25 monthly.", "source_type": "survey", "url": "https://d.example/p"}
+        },
+        "coverage": {"required_fields": ["pricing_model"], "covered_fields": ["pricing_model"]}
+      }
+    },
+    {
+      "id": "CONTRADICTION-02",
+      "description": "CONTRADICTION(source-vs-source,同一 claim supports+refutes 来自不同域名):S1 stance=supports(a.example),S2 stance=refutes(b.example)=> 跨域矛盾 => 该 claim 标 CONTRADICTION。两域名各一支持/反驳:supports 票仅 S1(refutes 不计支持)=> 仅 1 支持域名 => moderate(非 weak)=> 不报 WEAK。片段逐字;value.tiers='Pro' 在原文。",
+      "expected_codes": ["CONTRADICTION"],
+      "claimset": {
+        "claims": [
+          {"id": "C1", "competitor": "Acme", "schema_field": "pricing_model", "claim_type": "fact", "statement": "Pro pricing.", "value": {"tiers": ["Pro"]}, "evidence": [
+            {"source_id": "S1", "snippet": "Pro $10/mo", "relevance": "supports", "stance": "supports"},
+            {"source_id": "S2", "snippet": "Pro $25/mo", "relevance": "supports", "stance": "refutes"}
+          ]}
+        ],
+        "sources": {
+          "S1": {"raw_text": "Pro $10/mo from the official Pro page.", "source_type": "official", "url": "https://a.example/p"},
+          "S2": {"raw_text": "Pro $25/mo per this review.", "source_type": "review", "url": "https://b.example/p"}
+        },
+        "coverage": {"required_fields": ["pricing_model"], "covered_fields": ["pricing_model"]}
+      }
+    },
+    {
+      "id": "CONTRADICTION-03",
+      "description": "CONTRADICTION(两 claim 值不同,且其中 C2 无支持票):C1 两权威域名 supports => contradiction 降 moderate;C2 唯一证据 relevance='direct'(非 supports)=> 零支持 => weak(contradiction 不能把 weak 提升)=> C2 触发 WEAK_EVIDENCE。两 claim 均 CONTRADICTION。片段逐字;value 数字叶子被忽略。",
+      "expected_codes": ["CONTRADICTION", "WEAK_EVIDENCE"],
+      "claimset": {
+        "claims": [
+          {"id": "C1", "competitor": "A", "schema_field": "pricing_model", "claim_type": "fact", "statement": "Pro $10.", "value": {"tiers": ["$10"]}, "evidence": [
+            {"source_id": "S1", "snippet": "Pro tier costs $10", "relevance": "supports"},
+            {"source_id": "S2", "snippet": "Pro at $10", "relevance": "supports"}
+          ]},
+          {"id": "C2", "competitor": "A", "schema_field": "pricing_model", "claim_type": "fact", "statement": "Pro $25.", "value": {"tiers": ["$25"]}, "evidence": [
+            {"source_id": "S3", "snippet": "Pro tier costs $25", "relevance": "direct"}
+          ]}
+        ],
+        "sources": {
+          "S1": {"raw_text": "Pro tier costs $10 per month.", "source_type": "official", "url": "https://a.example/p"},
+          "S2": {"raw_text": "Pro at $10 monthly.", "source_type": "survey", "url": "https://b.example/p"},
+          "S3": {"raw_text": "Pro tier costs $25 per month.", "source_type": "official", "url": "https://c.example/p"}
+        },
+        "coverage": {"required_fields": ["pricing_model"], "covered_fields": ["pricing_model"]}
+      }
+    },
+    {
+      "id": "LOW_COVERAGE-01",
+      "description": "LOW_COVERAGE:3 必填仅覆盖 1 => ratio 0.33 < 0.8 => 触发。单 claim 两权威域名 supports => strong => 不报 WEAK;value.tiers 在原文;片段逐字。",
+      "expected_codes": ["LOW_COVERAGE"],
+      "claimset": {
+        "claims": [
+          {"id": "C1", "competitor": "A", "schema_field": "pricing_model", "claim_type": "fact", "statement": "Pro tier.", "value": {"tiers": ["Pro tier"]}, "evidence": [
+            {"source_id": "S1", "snippet": "Pro tier costs $10", "relevance": "supports"},
+            {"source_id": "S2", "snippet": "the Pro tier at $10", "relevance": "supports"}
+          ]}
+        ],
+        "sources": {
+          "S1": {"raw_text": "Pro tier costs $10 per month.", "source_type": "official", "url": "https://a.example/p"},
+          "S2": {"raw_text": "Survey: the Pro tier at $10 monthly.", "source_type": "survey", "url": "https://b.example/p"}
+        },
+        "coverage": {"required_fields": ["pricing_model", "user_sentiment", "feature_tree"], "covered_fields": ["pricing_model"]}
+      }
+    },
+    {
+      "id": "LOW_COVERAGE-02",
+      "description": "LOW_COVERAGE(边界:恰好低于阈值):5 必填覆盖 3 => ratio 0.6 < 0.8 => 触发。注:CLEAN-09 用 4/5=0.8 不触发,本例 3/5=0.6 触发,两例刚好夹住阈值。单 claim 两权威域名 supports => 不报 WEAK。",
+      "expected_codes": ["LOW_COVERAGE"],
+      "claimset": {
+        "claims": [
+          {"id": "C1", "competitor": "A", "schema_field": "pricing_model", "claim_type": "fact", "statement": "Pro tier.", "value": {"tiers": ["Pro tier"]}, "evidence": [
+            {"source_id": "S1", "snippet": "Pro tier costs $10", "relevance": "supports"},
+            {"source_id": "S2", "snippet": "the Pro tier costs $10", "relevance": "supports"}
+          ]}
+        ],
+        "sources": {
+          "S1": {"raw_text": "Pro tier costs $10 per month.", "source_type": "official", "url": "https://a.example/p"},
+          "S2": {"raw_text": "Survey: the Pro tier costs $10 monthly.", "source_type": "survey", "url": "https://b.example/p"}
+        },
+        "coverage": {"required_fields": ["f1", "f2", "f3", "f4", "f5"], "covered_fields": ["f1", "f2", "f3"]}
+      }
+    },
+    {
+      "id": "LOW_COVERAGE-03",
+      "description": "LOW_COVERAGE:zero 覆盖(覆盖空)=> ratio 0 < 0.8。同时该单 claim 唯一证据 relevance='direct' 非 supports => weak => 也报 WEAK_EVIDENCE。片段逐字;value.tiers 在原文。组合用例。",
+      "expected_codes": ["LOW_COVERAGE", "WEAK_EVIDENCE"],
+      "claimset": {
+        "claims": [
+          {"id": "C1", "competitor": "A", "schema_field": "pricing_model", "claim_type": "fact", "statement": "Pro tier.", "value": {"tiers": ["Pro tier"]}, "evidence": [
+            {"source_id": "S1", "snippet": "Pro tier", "relevance": "direct"}
+          ]}
+        ],
+        "sources": {
+          "S1": {"raw_text": "We offer a Pro tier officially.", "source_type": "official", "url": "https://a.example/p"}
+        },
+        "coverage": {"required_fields": ["pricing_model", "user_sentiment"], "covered_fields": []}
+      }
+    },
+    {
+      "id": "VALUE_UNSUPPORTED-01",
+      "description": "VALUE_UNSUPPORTED(数字不在原文,字符串编造):必填 tiers=['Phantom Platinum Plan'] 不在任一 cited 原文 => 触发。两 cited 域名片段逐字 supports => strong => 不报 WEAK;片段在原文 => 不报 HALLUCINATED。",
+      "expected_codes": ["VALUE_UNSUPPORTED"],
+      "claimset": {
+        "claims": [
+          {"id": "C1", "competitor": "A", "schema_field": "pricing_model", "claim_type": "fact", "statement": "Phantom Platinum Plan exists.", "value": {"tiers": ["Phantom Platinum Plan"]}, "evidence": [
+            {"source_id": "S1", "snippet": "pricing starts at $10", "relevance": "supports"},
+            {"source_id": "S2", "snippet": "affordable plans available", "relevance": "supports"}
+          ]}
+        ],
+        "sources": {
+          "S1": {"raw_text": "Our official pricing starts at $10 per month for the basic tier.", "source_type": "official", "url": "https://a.example/p"},
+          "S2": {"raw_text": "Survey: affordable plans available for small teams.", "source_type": "survey", "url": "https://b.example/p"}
+        },
+        "coverage": {"required_fields": ["pricing_model"], "covered_fields": ["pricing_model"]}
+      }
+    },
+    {
+      "id": "VALUE_UNSUPPORTED-02",
+      "description": "VALUE_UNSUPPORTED(数字必填叶子编造):feature_tree.categories 内嵌 count=99999 不是原文整 token(原文只有 12)=> 触发。name='Collaboration' 在原文 => 不致额外失败。两域名 supports => strong;片段逐字。",
+      "expected_codes": ["VALUE_UNSUPPORTED"],
+      "claimset": {
+        "claims": [
+          {"id": "C1", "competitor": "A", "schema_field": "feature_tree", "claim_type": "fact", "statement": "Collaboration.", "value": {"categories": [{"name": "Collaboration", "count": 99999}]}, "evidence": [
+            {"source_id": "S1", "snippet": "Collaboration features", "relevance": "supports"},
+            {"source_id": "S2", "snippet": "12 collaboration tools", "relevance": "supports"}
+          ]}
+        ],
+        "sources": {
+          "S1": {"raw_text": "Collaboration features across 12 tools officially.", "source_type": "official", "url": "https://a.example/f"},
+          "S2": {"raw_text": "Survey: 12 collaboration tools confirmed.", "source_type": "survey", "url": "https://b.example/f"}
+        },
+        "coverage": {"required_fields": ["feature_tree"], "covered_fields": ["feature_tree"]}
+      }
+    },
+    {
+      "id": "VALUE_UNSUPPORTED-03",
+      "description": "VALUE_UNSUPPORTED(改写而非逐字 -> 应拒,value 层):必填 segments=['enterprise architects'] 是对原文 'large enterprise teams' 的改写,不逐字 => 触发。片段本身 'enterprise teams' 在原文 => 不报 HALLUCINATED。两域名 supports => strong。",
+      "expected_codes": ["VALUE_UNSUPPORTED"],
+      "claimset": {
+        "claims": [
+          {"id": "C1", "competitor": "A", "schema_field": "user_persona", "claim_type": "fact", "statement": "Enterprise architects.", "value": {"segments": ["enterprise architects"]}, "evidence": [
+            {"source_id": "S1", "snippet": "large enterprise teams", "relevance": "supports"},
+            {"source_id": "S2", "snippet": "for enterprise teams", "relevance": "supports"}
+          ]}
+        ],
+        "sources": {
+          "S1": {"raw_text": "Built for large enterprise teams and orgs.", "source_type": "official", "url": "https://a.example/u"},
+          "S2": {"raw_text": "Survey: designed for enterprise teams worldwide.", "source_type": "survey", "url": "https://b.example/u"}
+        },
+        "coverage": {"required_fields": ["user_persona"], "covered_fields": ["user_persona"]}
+      }
+    },
+    {
+      "id": "MULTI-01",
+      "description": "组合(SCHEMA_GAP + LOW_COVERAGE):pricing_model value 缺 tiers(SCHEMA_GAP);coverage 2 必填覆盖 1 => 0.5<0.8(LOW_COVERAGE)。两权威域名 supports => 不报 WEAK;value={} 无可查叶子 => 不报 VALUE_UNSUPPORTED;片段逐字。",
+      "expected_codes": ["SCHEMA_GAP", "LOW_COVERAGE"],
+      "claimset": {
+        "claims": [
+          {"id": "C1", "competitor": "A", "schema_field": "pricing_model", "claim_type": "fact", "statement": "Pricing.", "value": {}, "evidence": [
+            {"source_id": "S1", "snippet": "pricing starts at $10", "relevance": "supports"},
+            {"source_id": "S2", "snippet": "pricing from $10", "relevance": "supports"}
+          ]}
+        ],
+        "sources": {
+          "S1": {"raw_text": "Our pricing starts at $10 officially.", "source_type": "official", "url": "https://a.example/p"},
+          "S2": {"raw_text": "Survey: pricing from $10 reported.", "source_type": "survey", "url": "https://b.example/p"}
+        },
+        "coverage": {"required_fields": ["pricing_model", "feature_tree"], "covered_fields": ["pricing_model"]}
+      }
+    },
+    {
+      "id": "MULTI-02",
+      "description": "组合(HALLUCINATED_SNIPPET + VALUE_UNSUPPORTED):片段 'free forever' 不在原文(HALLUCINATED);必填 tiers=['Diamond Elite Tier'] 不在原文(VALUE_UNSUPPORTED)。两域名各一 supports 片段逐字? 注意 S1 片段编造 => S1 这条仍 relevance supports 计为支持票(评分看 relevance 不看是否逐字);S2 片段逐字 supports => 两权威域名 => strong => 不报 WEAK。",
+      "expected_codes": ["HALLUCINATED_SNIPPET", "VALUE_UNSUPPORTED"],
+      "claimset": {
+        "claims": [
+          {"id": "C1", "competitor": "A", "schema_field": "pricing_model", "claim_type": "fact", "statement": "Diamond Elite Tier.", "value": {"tiers": ["Diamond Elite Tier"]}, "evidence": [
+            {"source_id": "S1", "snippet": "free forever for all", "relevance": "supports"},
+            {"source_id": "S2", "snippet": "premium plans available", "relevance": "supports"}
+          ]}
+        ],
+        "sources": {
+          "S1": {"raw_text": "We offer premium plans starting at $50.", "source_type": "official", "url": "https://a.example/p"},
+          "S2": {"raw_text": "Survey: premium plans available widely.", "source_type": "survey", "url": "https://b.example/p"}
+        },
+        "coverage": {"required_fields": ["pricing_model"], "covered_fields": ["pricing_model"]}
+      }
+    },
+    {
+      "id": "MULTI-03",
+      "description": "组合(WEAK_EVIDENCE + VALUE_UNSUPPORTED):唯一证据 relevance='unrelated' => weak;必填 overall='ecstatic delight' 不在原文 => VALUE_UNSUPPORTED。片段在原文 => 不报 HALLUCINATED。",
+      "expected_codes": ["WEAK_EVIDENCE", "VALUE_UNSUPPORTED"],
+      "claimset": {
+        "claims": [
+          {"id": "C1", "competitor": "A", "schema_field": "user_sentiment", "claim_type": "fact", "statement": "Ecstatic delight.", "value": {"overall": "ecstatic delight"}, "evidence": [
+            {"source_id": "S1", "snippet": "users were neutral", "relevance": "unrelated"}
+          ]}
+        ],
+        "sources": {"S1": {"raw_text": "In reviews, users were neutral about the update.", "source_type": "review", "url": "https://r.example/a"}},
+        "coverage": {"required_fields": ["user_sentiment"], "covered_fields": ["user_sentiment"]}
+      }
+    },
+    {
+      "id": "BOUNDARY-01",
+      "description": "边界(两独立域名支持 -> 应过):两个真实(非 SIMULATED)独立域名,其一 official(权威)其一 review(弱),均 supports => has_authoritative True + >=2 域名 => strong => 无 WEAK。value.categories 在原文;片段逐字;覆盖满。整体干净。",
+      "expected_codes": [],
+      "claimset": {
+        "claims": [
+          {"id": "C1", "competitor": "A", "schema_field": "feature_tree", "claim_type": "fact", "statement": "Dashboards.", "value": {"categories": ["Dashboards"]}, "evidence": [
+            {"source_id": "S1", "snippet": "Dashboards", "relevance": "supports"},
+            {"source_id": "S2", "snippet": "Dashboards are great", "relevance": "supports"}
+          ]}
+        ],
+        "sources": {
+          "S1": {"raw_text": "Official feature list: Dashboards and reports.", "source_type": "official", "url": "https://a.example/f"},
+          "S2": {"raw_text": "Reviewers: Dashboards are great for analytics.", "source_type": "review", "url": "https://b.example/f"}
+        },
+        "coverage": {"required_fields": ["feature_tree"], "covered_fields": ["feature_tree"]}
+      }
+    },
+    {
+      "id": "BOUNDARY-02",
+      "description": "边界(两弱类型域名支持 -> moderate,不报 WEAK):两个 review/forum 弱类型独立域名均 supports => >=2 域名但无权威 => moderate(非 weak,非 strong)=> 无任何 issue(moderate 不报 WEAK)。value.segments 在原文;片段逐字;覆盖满。这区分了「strong 阈值」与「weak 阈值」:gate 只拒 weak,不拒 moderate。",
+      "expected_codes": [],
+      "claimset": {
+        "claims": [
+          {"id": "C1", "competitor": "A", "schema_field": "user_persona", "claim_type": "fact", "statement": "Indie hackers.", "value": {"segments": ["indie hackers"]}, "evidence": [
+            {"source_id": "S1", "snippet": "indie hackers", "relevance": "supports"},
+            {"source_id": "S2", "snippet": "many indie hackers", "relevance": "supports"}
+          ]}
+        ],
+        "sources": {
+          "S1": {"raw_text": "Forum: indie hackers love this tool.", "source_type": "forum", "url": "https://a.example/t"},
+          "S2": {"raw_text": "Review: many indie hackers adopt it.", "source_type": "review", "url": "https://b.example/t"}
+        },
+        "coverage": {"required_fields": ["user_persona"], "covered_fields": ["user_persona"]}
+      }
+    },
+    {
+      "id": "BOUNDARY-03",
+      "description": "边界(同站 supports+refutes 不算跨源矛盾):同一 claim S1 supports + S2 refutes 但同 registrable domain(acme.example 的子域)=> 非跨域矛盾 => 不报 CONTRADICTION。supports 票仅 S1 => 1 域名 => moderate => 不报 WEAK。片段逐字;value.tiers 在原文。整体干净。",
+      "expected_codes": [],
+      "claimset": {
+        "claims": [
+          {"id": "C1", "competitor": "Acme", "schema_field": "pricing_model", "claim_type": "fact", "statement": "Pro pricing.", "value": {"tiers": ["Pro"]}, "evidence": [
+            {"source_id": "S1", "snippet": "Pro $10/mo", "relevance": "supports", "stance": "supports"},
+            {"source_id": "S2", "snippet": "Pro $25/mo", "relevance": "supports", "stance": "refutes"}
+          ]}
+        ],
+        "sources": {
+          "S1": {"raw_text": "Pro $10/mo on the Pro docs page.", "source_type": "official", "url": "https://docs.acme.example/pricing"},
+          "S2": {"raw_text": "Pro $25/mo per this Acme blog.", "source_type": "official", "url": "https://blog.acme.example/post"}
+        },
+        "coverage": {"required_fields": ["pricing_model"], "covered_fields": ["pricing_model"]}
+      }
+    },
+    {
+      "id": "BOUNDARY-04",
+      "description": "边界(SIMULATED 不计入档位 -> 一真一模拟时仅 1 真实支持域名 => moderate 非 strong,但 gate 只拒 weak,故仍干净):S1 真实 official supports,S2 SIMULATED survey supports(被排除)=> 仅 1 支持域名 => moderate => 无 WEAK。片段逐字(SIMULATED 可逐字接地);value.tiers 在 S1 原文。验证 SIMULATED 既不计档位也不报错。",
+      "expected_codes": [],
+      "claimset": {
+        "claims": [
+          {"id": "C1", "competitor": "A", "schema_field": "pricing_model", "claim_type": "fact", "statement": "Team tier.", "value": {"tiers": ["Team tier"]}, "evidence": [
+            {"source_id": "S1", "snippet": "Team tier", "relevance": "supports"},
+            {"source_id": "SV1", "snippet": "the Team tier", "relevance": "supports"}
+          ]}
+        ],
+        "sources": {
+          "S1": {"raw_text": "We offer a Team tier officially.", "source_type": "official", "url": "https://a.example/p"},
+          "SV1": {"raw_text": "Interview: the Team tier is popular.", "source_type": "interview", "url": "https://b.example/iv", "source_mode": "SIMULATED"}
+        },
+        "coverage": {"required_fields": ["pricing_model"], "covered_fields": ["pricing_model"]}
+      }
+    },
+    {
+      "id": "BOUNDARY-05",
+      "description": "边界(snippet 完全逐字 -> 应过):单一真实 official 来源,片段 'Messaging and Huddles' 完全逐字在原文 => 不报 HALLUCINATED;value.categories 逐字在原文 => 不报 VALUE_UNSUPPORTED;单域名 supports => moderate(非 weak)=> 不报 WEAK。覆盖满。整体干净。锁定 G5 单源逐字不过度拒绝。",
+      "expected_codes": [],
+      "claimset": {
+        "claims": [
+          {"id": "C1", "competitor": "Slack", "schema_field": "feature_tree", "claim_type": "fact", "statement": "Messaging and Huddles.", "value": {"categories": ["Messaging", "Huddles"]}, "evidence": [
+            {"source_id": "S1", "snippet": "Messaging and Huddles", "relevance": "supports", "stance": "supports"}
+          ]}
+        ],
+        "sources": {"S1": {"raw_text": "Slack core features: Messaging and Huddles for teams.", "source_type": "official", "url": "https://slack.example/features"}},
+        "coverage": {"required_fields": ["feature_tree"], "covered_fields": ["feature_tree"]}
+      }
+    },
+    {
+      "id": "BOUNDARY-06",
+      "description": "边界(必填字段缺失 vs 可选字段缺失 — 必填缺失应拒):user_sentiment 必填 overall 缺失(value 只给可选 positives)=> SCHEMA_GAP。可选 positives=['fast and reliable'] 不查(VALUE_UNSUPPORTED 只查必填)。两权威域名 supports => 不报 WEAK;片段逐字。与 CLEAN-07/CLEAN-10(可选缺失/可选未接地无害)成对照。",
+      "expected_codes": ["SCHEMA_GAP"],
+      "claimset": {
+        "claims": [
+          {"id": "C1", "competitor": "A", "schema_field": "user_sentiment", "claim_type": "fact", "statement": "Fast and reliable.", "value": {"positives": ["fabricated unsupported praise phrase"]}, "evidence": [
+            {"source_id": "S1", "snippet": "users are happy", "relevance": "supports"},
+            {"source_id": "S2", "snippet": "users are happy overall", "relevance": "supports"}
+          ]}
+        ],
+        "sources": {
+          "S1": {"raw_text": "Officially, users are happy with the service.", "source_type": "official", "url": "https://a.example/r"},
+          "S2": {"raw_text": "Survey: users are happy overall.", "source_type": "survey", "url": "https://b.example/r"}
+        },
+        "coverage": {"required_fields": ["user_sentiment"], "covered_fields": ["user_sentiment"]}
+      }
+    },
+    {
+      "id": "BOUNDARY-07",
+      "description": "边界(数字不在原文 -> 应拒,必填数字 token 整词匹配):feature_tree.categories count=12 但原文只有 120/2012 含 '12' 子串而无整 token '12' => 编造数字不应靠子串接地 => VALUE_UNSUPPORTED。name='Collaboration' 在原文。两权威域名 supports => 不报 WEAK;片段逐字。",
+      "expected_codes": ["VALUE_UNSUPPORTED"],
+      "claimset": {
+        "claims": [
+          {"id": "C1", "competitor": "A", "schema_field": "feature_tree", "claim_type": "fact", "statement": "Collaboration.", "value": {"categories": [{"name": "Collaboration", "count": 12}]}, "evidence": [
+            {"source_id": "S1", "snippet": "Collaboration since", "relevance": "supports"},
+            {"source_id": "S2", "snippet": "Collaboration accounts", "relevance": "supports"}
+          ]}
+        ],
+        "sources": {
+          "S1": {"raw_text": "Collaboration since 2012 across many teams.", "source_type": "official", "url": "https://a.example/f"},
+          "S2": {"raw_text": "Survey: Collaboration accounts number 120 today.", "source_type": "survey", "url": "https://b.example/f"}
+        },
+        "coverage": {"required_fields": ["feature_tree"], "covered_fields": ["feature_tree"]}
+      }
+    },
+    {
+      "id": "BOUNDARY-08",
+      "description": "边界(逗号千分位接地 + 派生 depth 豁免 — 应过):feature_tree.categories=['Messaging'] 在原文;可选 depth=3(派生结构数,豁免数字接地,即便 '3' 不在原文也不报);VALUE_UNSUPPORTED 只查必填 categories,故 depth 在可选层即便存在也不查。两权威域名 supports => strong;片段逐字。整体干净。",
+      "expected_codes": [],
+      "claimset": {
+        "claims": [
+          {"id": "C1", "competitor": "A", "schema_field": "feature_tree", "claim_type": "fact", "statement": "Messaging.", "value": {"categories": ["Messaging"], "depth": 3}, "evidence": [
+            {"source_id": "S1", "snippet": "Messaging", "relevance": "supports"},
+            {"source_id": "S2", "snippet": "Messaging feature", "relevance": "supports"}
+          ]}
+        ],
+        "sources": {
+          "S1": {"raw_text": "Officially: Messaging is a core feature.", "source_type": "official", "url": "https://a.example/f"},
+          "S2": {"raw_text": "Survey: Messaging feature is widely used.", "source_type": "survey", "url": "https://b.example/f"}
+        },
+        "coverage": {"required_fields": ["feature_tree"], "covered_fields": ["feature_tree"]}
+      }
+    },
+    {
+      "id": "INFERENCE-01",
+      "description": "inference(合法 lineage + 已接地 value -> 应过):I1 based_on=['F1'] 引用存在的 F1 => lineage 完整不报 SCHEMA_GAP。inference 无 evidence => 评分 weak => 报 WEAK_EVIDENCE(value-grounding 与评分对 inference 同样无条件)。swot 四必填齐全且叶子在原文? inference 无 cited evidence => haystack 空 => VALUE_UNSUPPORTED 因 haystack 空提前返回不报。F1 自身两权威域名 supports + categories 在原文 => F1 干净。整体仅 I1 的 WEAK_EVIDENCE。",
+      "expected_codes": ["WEAK_EVIDENCE"],
+      "claimset": {
+        "claims": [
+          {"id": "F1", "competitor": "X", "schema_field": "feature_tree", "claim_type": "fact", "statement": "Has dashboards.", "value": {"categories": ["dashboards"]}, "evidence": [
+            {"source_id": "S1", "snippet": "dashboards", "relevance": "supports"},
+            {"source_id": "S2", "snippet": "dashboards available", "relevance": "supports"}
+          ]},
+          {"id": "I1", "competitor": "X", "schema_field": "swot", "claim_type": "inference", "statement": "Inferred SWOT from F1.", "value": {"strengths": ["dashboard breadth"], "weaknesses": ["onboarding"], "opportunities": ["upsell"], "threats": ["copycats"]}, "based_on": ["F1"], "evidence": []}
+        ],
+        "sources": {
+          "S1": {"raw_text": "Official: dashboards are central to the product.", "source_type": "official", "url": "https://x.example/f"},
+          "S2": {"raw_text": "Survey: dashboards available to all users.", "source_type": "survey", "url": "https://y.example/f"}
+        },
+        "coverage": {"required_fields": [], "covered_fields": []}
+      }
+    },
+    {
+      "id": "INFERENCE-02",
+      "description": "inference(无 lineage 被接纳 + 已接地 value):I1 based_on=[](无 lineage)=> 不报 SCHEMA_GAP(lineage-less inference 被接纳)。I1 有 cited evidence relevance='supports' 来自两权威域名 => strength strong => 不报 WEAK。swot 四必填齐全且叶子逐字在 cited 原文 => 不报 VALUE_UNSUPPORTED;片段逐字 => 不报 HALLUCINATED。整体干净。验证 inference 的 value 仍被无条件接地但通过。",
+      "expected_codes": [],
+      "claimset": {
+        "claims": [
+          {"id": "I1", "competitor": "X", "schema_field": "swot", "claim_type": "inference", "statement": "Inferred SWOT.", "value": {"strengths": ["strong brand"], "weaknesses": ["limited support"], "opportunities": ["new markets"], "threats": ["rising competition"]}, "based_on": [], "evidence": [
+            {"source_id": "S1", "snippet": "strong brand and limited support", "relevance": "supports"},
+            {"source_id": "S2", "snippet": "new markets and rising competition", "relevance": "supports"}
+          ]}
+        ],
+        "sources": {
+          "S1": {"raw_text": "Analysts: strong brand and limited support define it.", "source_type": "official", "url": "https://x.example/s"},
+          "S2": {"raw_text": "Survey: new markets and rising competition ahead.", "source_type": "survey", "url": "https://y.example/s"}
+        },
+        "coverage": {"required_fields": [], "covered_fields": []}
+      }
+    },
+    {
+      "id": "INFERENCE-03",
+      "description": "inference(显式 inference 标签不能绕过 value gate):I1 claim_type='inference' 但必填 tiers=['Fabricated Enterprise Tier'] 不在 cited 原文 => VALUE_UNSUPPORTED 照样触发(LLM 提议、代码裁决)。I1 有 supports 证据但仅 1 域名 => moderate(非 weak)=> 不报 WEAK;片段 'Free and Pro plans.' 逐字在原文 => 不报 HALLUCINATED;based_on=[] 被接纳 => 不报 SCHEMA_GAP。",
+      "expected_codes": ["VALUE_UNSUPPORTED"],
+      "claimset": {
+        "claims": [
+          {"id": "I1", "competitor": "X", "schema_field": "pricing_model", "claim_type": "inference", "statement": "Inferred enterprise tier.", "value": {"tiers": ["Fabricated Enterprise Tier"]}, "based_on": [], "evidence": [
+            {"source_id": "S1", "snippet": "Free and Pro plans.", "relevance": "supports"}
+          ]}
+        ],
+        "sources": {"S1": {"raw_text": "We offer Free and Pro plans.", "source_type": "official", "url": "https://x.example/p"}},
+        "coverage": {"required_fields": [], "covered_fields": []}
+      }
+    }
+  ],
+  "known_gaps": []
+}

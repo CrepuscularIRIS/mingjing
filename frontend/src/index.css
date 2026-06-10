@@ -1,0 +1,132 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  /* Deliberate type system. Inter for UI/body, Source Serif 4 for the
+     report + brand wordmark. CJK falls back to the platform serif/sans. */
+  --font-sans: 'Inter Variable', system-ui, 'Segoe UI', Roboto, sans-serif;
+  --font-serif: 'Source Serif 4 Variable', 'Songti SC', 'SimSun', Georgia, serif;
+  font-family: var(--font-sans);
+  /* Dark intelligence canvas — near-white text on near-black slate (ink scale). */
+  color: #f1f5f6;
+  background: #0a0e10;
+  color-scheme: dark;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+
+  /* ---- shadcn/ui semantic theme ----
+     Stored as space-separated RGB CHANNELS taken verbatim from the ink/mirror
+     hex scale (tailwind.config.js), consumed as `rgb(var(--x) / <alpha-value>)`
+     so shadcn opacity modifiers (e.g. bg-primary/90) work AND the palette stays
+     pixel-identical to the tuned brand tokens. No second source of truth. */
+  --background: 10 14 16;             /* ink-50 dark canvas */
+  --foreground: 241 245 246;          /* ink-900 near-white */
+  --card: 17 23 26;                   /* raised slate */
+  --card-foreground: 241 245 246;
+  --popover: 17 23 26;
+  --popover-foreground: 241 245 246;
+  --primary: 68 154 150;              /* mirror-400 — brighter teal on dark */
+  --primary-foreground: 6 12 12;
+  --secondary: 27 35 41;             /* ink-200 */
+  --secondary-foreground: 223 230 233; /* ink-800 */
+  --muted: 27 35 41;                 /* ink-200 */
+  --muted-foreground: 139 154 161;   /* ink-500 */
+  --accent: 20 40 40;                /* deep teal tint */
+  --accent-foreground: 113 187 182;  /* mirror-300 */
+  --destructive: 220 70 60;          /* calm red, lifted for dark */
+  --destructive-foreground: 255 255 255;
+  --border: 27 35 41;                /* ink-200 */
+  --input: 27 35 41;                 /* ink-200 */
+  --ring: 68 154 150;                /* mirror-400 */
+  --radius: 0.625rem;
+}
+
+body {
+  margin: 0;
+}
+
+#root {
+  min-height: 100vh;
+}
+
+/* ---- Depth / glass surface utilities (award-level visual system) ----
+ * Layered surfaces so the workbench reads as a stack of panels, not a wireframe.
+ * These are STATIC (no animation) — they cost nothing at 60fps and are safe behind
+ * text. Motion stays opt-in via the existing `animate-*` keyframes (arrival only).
+ */
+@layer utilities {
+  /* Premium dark panel: raised slate + hairline border + inner top highlight +
+   * soft outer shadow (depth via light, not white shadow). */
+  .depth-card {
+    background-color: rgb(17 23 26);
+    border: 1px solid rgb(27 35 41 / 0.9);
+    box-shadow:
+      inset 0 1px 0 0 rgb(255 255 255 / 0.03),
+      0 10px 30px -14px rgb(0 0 0 / 0.7);
+  }
+
+  /* Translucent dark glass for chrome (sidebar/topbar) over the ambient dot-grid.
+   * backdrop-blur is GPU-cheap on a fixed element; never on a scrolling list. */
+  .glass-surface {
+    background-color: rgb(12 16 18 / 0.66);
+    border: 1px solid rgb(27 35 41 / 0.7);
+    backdrop-filter: blur(12px) saturate(1.3);
+    -webkit-backdrop-filter: blur(12px) saturate(1.3);
+  }
+  @supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+    .glass-surface { background-color: rgb(10 14 16 / 0.97); }
+  }
+
+  .interactive-card {
+    transition:
+      transform 150ms cubic-bezier(0.23, 1, 0.32, 1),
+      border-color 150ms cubic-bezier(0.2, 0, 0, 1),
+      background-color 150ms cubic-bezier(0.2, 0, 0, 1),
+      box-shadow 150ms cubic-bezier(0.2, 0, 0, 1);
+  }
+  .interactive-card:hover,
+  .interactive-card:focus-within {
+    transform: translateY(-1px);
+    border-color: rgb(68 154 150 / 0.45);
+    box-shadow:
+      inset 0 1px 0 0 rgb(255 255 255 / 0.04),
+      0 16px 36px -18px rgb(0 0 0 / 0.8),
+      0 0 0 1px rgb(68 154 150 / 0.18);
+  }
+
+  .panel-width-transition {
+    transition: width 200ms cubic-bezier(0.23, 1, 0.32, 1);
+  }
+
+  .panel-content-fade {
+    transition: opacity 150ms cubic-bezier(0.2, 0, 0, 1);
+  }
+}
+
+/*
+ * Accessibility: honor the OS "reduce motion" setting. Arrival animations
+ * (tailwindcss-animate `animate-in`, the upgrade-reveal, blur-fade) collapse to
+ * an instant, static end-state so the product never animates for users who have
+ * opted out. Content is always present — only the motion is removed.
+ */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  ::before,
+  ::after {
+    animation-duration: 0.01ms !important;
+    /* -1ms forces fill-mode:both elements (our staggered `animate-in` sections)
+     * to their END state immediately — without this, a positive animation-delay
+     * keeps the section hidden during the stagger window even with motion off. */
+    animation-delay: -1ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    transition-delay: 0ms !important;
+    scroll-behavior: auto !important;
+  }
+
+  .interactive-card:hover,
+  .interactive-card:focus-within {
+    transform: none;
+  }
+}

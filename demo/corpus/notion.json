@@ -1,0 +1,75 @@
+{
+  "competitor": "Notion",
+  "fields": {
+    "pricing_model": [
+      {
+        "url": "https://dbpedia.org/page/Notion_(productivity_software)",
+        "title": "Notion (productivity software) - DBpedia",
+        "source_type": "web",
+        "text": "An Entity of Type: software , from Named Graph: http://dbpedia.org , within Data Space: dbpedia.org Productivity software Property Value dbo: description productivity software (en)"
+      },
+      {
+        "url": "https://www.notion.com/pricing",
+        "title": "Notion Pricing Plans: Free, Plus, Business, & Enterprise",
+        "source_type": "official",
+        "text": "Essentials for staying organized. Free $0 per member / month For individuals to organize personal projects and life. Sign up Includes: Trial AI capabilities like generating docs, or autofilling databases Trial of Notion AI Capture, organize, and act on responses right inside Notion. Basic forms Publish a Notion page to the web Basic sites Connect multiple Calendars to manage work and time together. Notion Calendar Connect your Gmail for an AI-powered, personalized inbox. Notion Mail (Syncs with Gmail) Organize hundreds or thousands of items in one place, like projects or tasks Databases including subtasks, dependencies, custom properties and more Plus $10 per member / month For small teams and professionals to work together. Get started Everything in Free, and: Trial AI capabilities like generating docs, or autofilling databases Trial of Notion AI Remove Notion branding from public forms Custom forms Customize your top header, choose a light or dark theme, add a custom favicon, and integrate with Google Analytics. Custom sites Visualize data from databases in different ways (e.g. donut, bar, and line charts). Unlimited charts Blocks are pieces of content you add to a page (e.g. to-do checkboxes, paragraphs, bullet points, etc.). Unlimited collaborative blocks A per file size limit may apply to any file that you upload to a Notion page or database. Unlimited file uploads Connect to some tools like Slack & Google Drive Basic connections The AI workspace for work that matters. Business Recommended $20 per member / month For growing businesses to streamline teamwork. Get started Everything in Plus, and: Does work for you. Completes complex, multi-step tasks using context from Notion, your connected apps, and the web. Notion Agent Automate your meeting notes and follow-ups, no bot needed AI Meeting Notes Search across connected apps like Slack, Github & more Enterprise Search Beta Manage employee access at scale with secure single sign-on. SAML SSO Collaborate in Notion databases without giving access to the entire database. Limit access to rows where the collaborator is assigned. Granular database permissions Add a verified badge to pages that are up to date. Appears in search results and AI citations. Verify any page Create teamspaces that can’t be seen or discovered by anyone except those you add. Great for sensitive information like company planning or performance reviews. Private teamspaces Verify ownership of an email domain to access advanced security features including single-sign on. Domain verification Connect to GitHub, Asana & more Premium connections Enterprise Custom pricing For organizations to operate with scalability, control, and security. Contact Sales"
+      }
+    ],
+    "user_sentiment": [
+      {
+        "url": "https://www.notion.com/customers",
+        "title": "Notion Customer Stories",
+        "source_type": "official",
+        "text": "Customer stories See how leading companies streamline workflows, consolidate tools, and bring everyone’s knowledge into one connected workspace. Featured Story Clay’s New Default: Workflows That Happen in the Background × Customers Team sizes Small (1-99 employees) Medium (100-999 employees) Enterprise (1000+ employees) Industries Technology Ecommerce Transportation Professional services Media Education Non-profit Hospitality Advertising Entertainment Clear"
+      },
+      {
+        "url": "https://www.pcmag.com/reviews/notion",
+        "title": "Notion Review | PCMag",
+        "source_type": "review",
+        "text": "The Bottom Line Notion is a good note-taking app for collaborating and is packed with features, including excellent AI integration, but it's overly complicated and doesn't work offline. Per User, Per Month, Starts at Free Visit Site See It PCMag editors select and review products independently . If you buy through affiliate links, we may earn commissions, which help support our testing . Pros & Cons Endlessly customizable Strong for collaboration Can build custom databases Great tools for importing from Evernote (and other apps) Overly complex for most people No offline access Sluggish Mediocre web clipper Full of Silicon Valley jargon Missing many features"
+      }
+    ],
+    "feature_tree": [
+      {
+        "url": "https://www.notion.com/about",
+        "title": "Why we built Notion – About",
+        "source_type": "official",
+        "text": "As a first step, we are blending much of your workflow into an all-in-one workspace . Want a task list? A product roadmap? A design repository? They are now all in one place. You can even customize your own workspace from dozens of building blocks. Solve your problems your way, bounded only by your imagination."
+      },
+      {
+        "url": "https://www.notion.com/help/what-is-a-database",
+        "title": "What is a database? – Notion Help Center",
+        "source_type": "official",
+        "text": "Databases are a core feature in Notion that help you manage and organize your pages. Let's explain what they are and how they can help you level up your workspace 🗄 Databases are collections of pages Think of Notion databases as filing cabinets or notebooks. Each database serves as a container, letting you easily organize multiple Notion pages in a single structure. In the screenshot below, every row of the table is a page within the database. This gives you a birds' eye view of an entire collection of pages at once. When you need to dive deeper, each page in a database can be opened, revealing its detailed contents. Databases are pages themselves But wait - each database is also a page itself! This is powerful, because it allows you to move and nest databases alongside other content, just like any other page. Databases have properties To help you organize all of the pages within a database, properties can be added to contextualize, label, and augment each individual item. You can then search, filter, and sort by these property values. Learn more about database properties here → Databases can display the same content in different ways The contents of a database can be visualized as a table, list, board, calendar, gallery, timeline, or chart — whatever makes the information the most useful."
+      }
+    ],
+    "user_persona": [
+      {
+        "url": "https://www.notion.com/product/ai",
+        "title": "Meet your AI team | Notion",
+        "source_type": "official",
+        "text": "Meet your 24/7 AI team Infinite minds, built for teamwork. Answer questions, prioritize tasks, and write reports—all while you sleep. Try for free Request a demo Trusted by teams at Agents Enterprise search AI Meeting Notes Admin controls Enterprise Search 16:10 Admin Controls 16:10 If it’s something that’s repetitive, we have a Notion Agent for it. Ben Levick Head of AI & Operations, Ramp"
+      },
+      {
+        "url": "https://www.pcmag.com/reviews/notion",
+        "title": "Notion Review | PCMag",
+        "source_type": "review",
+        "text": "Notion is a note-taking app widely used inside the software industry but little known outside it. You can use it to take simple notes or manage projects using databases with a variety views. Notion can be as simple or as complex a tool as you want, but it has a steep learning curve—most people can't go from taking simple notes to managing databases in an afternoon. This complexity, combined with a heavy bias toward people who work for software companies, makes Notion hard to recommend to the average person. If you're looking for a powerful note-taking app, whether as a replacement for Evernote or not, we recommend Editors' Choice winners OneNote and Joplin ."
+      }
+    ],
+    "swot": [
+      {
+        "url": "https://www.notion.com/about",
+        "title": "Why we built Notion – About",
+        "source_type": "official",
+        "text": "We want to break away from today’s tools—and bring back some of the ideas of those early pioneers. As a first step, we are blending much of your workflow into an all-in-one workspace . Want a task list? A product roadmap? A design repository? They are now all in one place. You can even customize your own workspace from dozens of building blocks."
+      },
+      {
+        "url": "https://www.pcmag.com/reviews/notion",
+        "title": "Notion Review | PCMag",
+        "source_type": "review",
+        "text": "Pros & Cons Endlessly customizable Strong for collaboration Can build custom databases Great tools for importing from Evernote (and other apps) Overly complex for most people No offline access Sluggish Mediocre web clipper Full of Silicon Valley jargon Missing many features Notion Specs Name Value Free Storage Unlimited Storage for Price Listed Unlimited Max File Upload None Web Clipper Web App Mac App Windows App Android App iOS App OCR Sketching Supported Email Forwarding Scanning PDF Annotation Geolocation Audio Note-Taking Collaboration Tools More Specs"
+      }
+    ]
+  }
+}

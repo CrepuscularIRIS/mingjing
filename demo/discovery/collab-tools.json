@@ -1,0 +1,27 @@
+{
+  "category": "团队协作 / 项目管理工具",
+  "market_scope": "global",
+  "note": "Cached real official-page previews for the CLOSED-LOOP Discovery demo. Every URL is a real product page (Notion, Linear). discover_competitors ranks these to SELECT ['Notion','Linear'] — the two products that have a real demo corpus (demo/corpus/notion.json, demo/corpus/linear.json) — so the SAME run goes category → discover → analyze → QA → verified report. Same honesty model as demo/corpus/*.json: real pages only; the selection is computed by the ranking algorithm, not hand-picked.",
+  "previews": [
+    {
+      "url": "https://www.notion.so/",
+      "title": "Notion - The connected workspace",
+      "snippet": "Notion is an all-in-one workspace for notes, docs, projects and collaboration."
+    },
+    {
+      "url": "https://www.notion.so/pricing",
+      "title": "Notion - Pricing plans",
+      "snippet": "Notion offers Free, Plus, Business and Enterprise plans for teams."
+    },
+    {
+      "url": "https://linear.app/",
+      "title": "Linear - Plan and build products",
+      "snippet": "Linear is the issue tracking and project management tool for modern software teams."
+    },
+    {
+      "url": "https://linear.app/pricing",
+      "title": "Linear - Pricing",
+      "snippet": "Linear pricing: Free, Basic, Business and Enterprise tiers, billed per seat."
+    }
+  ]
+}

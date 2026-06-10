@@ -1,0 +1,32 @@
+{
+  "category": "通用 AI Agent",
+  "market_scope": "china",
+  "note": "Cached real official-page previews for the Discovery-Mode demo. Every URL is a real product homepage (Manus, Coze/扣子, Monica, Dify). The SELECTED set is computed by mingjing.discovery.rank_candidates over these previews, not hand-picked. Same honesty model as demo/corpus/*.json: real pages only.",
+  "previews": [
+    {
+      "url": "https://manus.im/",
+      "title": "Manus - 通用 AI Agent",
+      "snippet": "Manus 是一款通用型 AI Agent，能够自主规划并执行复杂任务，覆盖研究、写作与数据处理等场景。"
+    },
+    {
+      "url": "https://www.coze.com/",
+      "title": "Coze - AI Agent 开发平台",
+      "snippet": "Coze（扣子）是字节跳动推出的 AI Agent 构建平台，可零代码搭建并发布智能体。"
+    },
+    {
+      "url": "https://www.coze.cn/",
+      "title": "扣子 Coze - 新一代 AI 应用开发平台",
+      "snippet": "扣子 Coze 提供插件、工作流、知识库等能力，用于快速构建通用 AI Agent。"
+    },
+    {
+      "url": "https://monica.im/",
+      "title": "Monica - 你的私人 AI Agent",
+      "snippet": "Monica 是一款集成多模型的通用 AI 助手 / Agent，支持网页问答、写作与翻译。"
+    },
+    {
+      "url": "https://dify.ai/",
+      "title": "Dify - 开源 LLM 应用与 AI Agent 平台",
+      "snippet": "Dify 是开源的 LLM 应用开发平台，支持构建可编排的 AI Agent 工作流。"
+    }
+  ]
+}

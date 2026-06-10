@@ -1,0 +1,63 @@
+{
+  "competitor": "Linear",
+  "fields": {
+    "pricing_model": [
+      {
+        "url": "https://costbench.com/software/developer-tools/linear/",
+        "title": "Linear Pricing 2026: Plans, Per-User Costs",
+        "source_type": "web",
+        "text": "Linear uses a simple per-seat model with four tiers: a Free plan for small teams, a paid Basic plan, a Business plan for scaling organizations, and custom Enterprise pricing. Plans are billed per user, with a discount for annual billing."
+      },
+      {
+        "url": "https://linear.app/pricing",
+        "title": "Pricing – Linear",
+        "source_type": "official",
+        "text": "Free $0 Free for everyone. Unlimited members. 2 teams. 250 issues. Basic $10 per user/month. Billed yearly. All Free features + 5 teams. Unlimited issues. File uploads. Admin roles. Business $16 per user/month. Billed yearly. All Basic features + Unlimited teams. Private teams. Guest accounts. Triage Intelligence. Enterprise Custom. Annual billing only. All Business features + SAML and SCIM. Priority support."
+      }
+    ],
+    "feature_tree": [
+      {
+        "url": "https://linear.app/features",
+        "title": "Features – Linear",
+        "source_type": "official",
+        "text": "The system for modern product development. Linear streamlines work across the entire development cycle, from roadmap to release. Planning: Set the product direction with projects and initiatives. Building: Make progress with issue tracking and cycle planning. Streamline product development with AI-powered workflows and agents. Instant analytics for any stream of work. Move product work forward from anywhere. Build what customers actually want with Customer Requests. Turn workplace requests into actionable issues with Linear Asks."
+      }
+    ],
+    "user_persona": [
+      {
+        "url": "https://linear.app/",
+        "title": "Linear – The product development system for teams and agents",
+        "source_type": "official",
+        "text": "The product development system for teams and agents. Purpose-built for planning and building products. Designed for the AI era. Purpose-built for modern teams with AI workflows at its core. 33,000 product teams. From ambitious startups to major enterprises. Designed for workflows shared by humans and agents. From drafting PRDs to pushing PRs. \"Linear is excellent, just excellent. It has the right opinions for fast moving teams.\" — Kaz Nejatian, Opendoor. \"Our speed is intense and Linear helps us be action biased.\" — Nik Koblov, Ramp."
+      }
+    ],
+    "user_sentiment": [
+      {
+        "url": "https://www.capterra.com/p/10026109/Linear/",
+        "title": "Linear Software Pricing, Alternatives & More 2026 | Capterra",
+        "source_type": "review",
+        "text": "Overall Rating: 4.3 out of 5 stars. Pros: \"Linear helps our team stay aligned on assignments, prioritize tasks effectively, and maintain visibility\"; \"great user interface & all the available integrations with linear\"; \"Very simple product to use with powerful project management functionality\". Cons: \"I sometimes wish I could order by different criteria, like latest added, due date\"; \"The simplicity or lack of features is a downside\"."
+      },
+      {
+        "url": "https://firstsales.io/brand-review/linear/",
+        "title": "Linear Review: Features, Pricing, Pros & Cons",
+        "source_type": "web",
+        "text": "Pros: \"User-friendly interface\"; \"Strong community support\"; \"Regular updates and improvements\"; \"Comprehensive documentation\"; \"Multiple integration options\". The review highlights that Linear offers \"better ease of use and more modern interface\" compared to competitors, along with \"faster implementation\" and a \"better onboarding experience\"."
+      }
+    ],
+    "swot": [
+      {
+        "url": "https://firstsales.io/brand-review/linear/",
+        "title": "Linear Review: Features, Pricing, Pros & Cons",
+        "source_type": "web",
+        "text": "Pros: \"User-friendly interface\"; \"Strong community support\"; \"Regular updates and improvements\"; \"Multiple integration options\". Cons: \"Learning curve for advanced features\"; \"Higher tier plans can be expensive\"; \"Some features require technical knowledge\"; \"Customer support response time varies\"; \"Mobile app has limited functionality\"."
+      },
+      {
+        "url": "https://www.capterra.com/p/10026109/Linear/",
+        "title": "Linear Software Pricing, Alternatives & More 2026 | Capterra",
+        "source_type": "review",
+        "text": "Cons: \"I sometimes wish I could order by different criteria, like latest added, due date\"; \"The simplicity or lack of features is a downside\"; \"Would be nice if they launched more AI functionality to help clean up messy tickets\". Pros: \"great user interface & all the available integrations with linear\"; \"Very simple product to use with powerful project management functionality\"."
+      }
+    ]
+  }
+}

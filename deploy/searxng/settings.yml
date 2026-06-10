@@ -1,0 +1,36 @@
+# MingJing SearXNG override — extends SearXNG defaults.
+#
+# Two things matter for MingJing's collector:
+#   1. search.formats must include `json` (the collector calls /search?format=json).
+#   2. server.limiter must be false, else the JSON API returns HTTP 403.
+#
+# CN tuning: enable Bing + Baidu, disable Google/DuckDuckGo (blocked/throttled
+# from a China network). On an overseas box you can flip these back.
+
+use_default_settings: true
+
+server:
+  # Required by SearXNG. Change this to any random string for your deployment.
+  secret_key: "mingjing-dev-change-me"
+  # The JSON API is rejected with 403 while the bot limiter is on.
+  limiter: false
+  image_proxy: false
+
+search:
+  formats:
+    - html
+    - json
+  default_lang: "zh-CN"
+  # safe search off so competitor/pricing pages aren't filtered.
+  safe_search: 0
+
+engines:
+  - name: bing
+    disabled: false
+  - name: baidu
+    disabled: false
+  # Blocked/throttled from CN — disabled here. Re-enable on an overseas host.
+  - name: google
+    disabled: true
+  - name: duckduckgo
+    disabled: true

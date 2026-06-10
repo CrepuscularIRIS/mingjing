@@ -1,0 +1,351 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>明镜 MingJing · 答辩 Deck</title>
+<style>
+  /* ============================================================
+     MingJing 答辩 deck — command-center visual system (original).
+     Deep navy base + blue/cyan/violet accents; green/indigo/amber for
+     evidence-strength semantics. Matches cover.html. Brix dark-dashboard
+     used as LOOSE genre reference only — no asset/layout copying.
+     ============================================================ */
+  :root{
+    --bg:#080c16; --bg2:#0b1120; --surface:#0f1828; --surface2:#13203a; --border:#1d2a42; --border2:#27374f;
+    --ink:#eef3fb; --muted:#9fb0ca; --dim:#8a98b3;
+    --blue:#3b82f6; --cyan:#22d3ee; --violet:#8b5cf6; --indigo:#6366f1;
+    --strong:#34d399; --moderate:#818cf8; --weak:#fbbf24; --reject:#fb7185;
+    --mono:'JetBrains Mono','SFMono-Regular',ui-monospace,Menlo,monospace;
+    --sans:'Inter','Segoe UI',system-ui,'Microsoft YaHei',sans-serif;
+    --serif:'Source Serif 4','Songti SC',Georgia,serif;
+    --grad:linear-gradient(100deg,var(--cyan),var(--blue) 45%,var(--violet));
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{height:100%}
+  body{background:#05080f;color:var(--ink);font-family:var(--sans);overflow:hidden}
+  /* ambient: soft radial glows + faint dot grid (command-center atmosphere) */
+  body::before{content:"";position:fixed;inset:0;z-index:0;pointer-events:none;
+    background:
+      radial-gradient(70% 55% at 88% -8%,rgba(34,211,238,.12),transparent 60%),
+      radial-gradient(60% 60% at -6% 106%,rgba(139,92,246,.13),transparent 60%);}
+  body::after{content:"";position:fixed;inset:0;z-index:0;opacity:.45;pointer-events:none;
+    background-image:radial-gradient(rgba(120,150,200,.10) 1px,transparent 1px);background-size:24px 24px}
+  .deck{position:relative;z-index:1;height:100vh;width:100vw}
+  .slide{position:absolute;inset:0;display:none;flex-direction:column;justify-content:center;
+    padding:7vh 9vw;animation:fade .5s ease}
+  .slide.active{display:flex}
+  @keyframes fade{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+  @media (prefers-reduced-motion:reduce){.slide{animation:none}}
+  .eyebrow{display:inline-block;font-family:var(--mono);font-size:12px;letter-spacing:.2em;text-transform:uppercase;
+    color:var(--cyan);font-weight:600;margin-bottom:18px;border:1px solid var(--border2);border-radius:999px;
+    padding:5px 12px;background:rgba(34,211,238,.05);align-self:flex-start}
+  h1{font-family:var(--serif);font-size:clamp(34px,5.4vw,66px);line-height:1.06;font-weight:600;letter-spacing:-.01em}
+  h2{font-family:var(--serif);font-size:clamp(26px,3.6vw,44px);line-height:1.12;font-weight:600;margin-bottom:26px}
+  p,li{font-size:clamp(15px,1.6vw,21px);line-height:1.6;color:var(--muted)}
+  .lead{font-size:clamp(18px,2vw,25px);color:var(--ink);max-width:48ch}
+  strong{color:var(--ink);font-weight:600}
+  .accent{background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent}
+  .teal{color:var(--cyan)}
+  .quote{font-family:var(--mono);font-size:clamp(13px,1.4vw,16px);color:var(--muted);
+    border-left:2px solid var(--blue);padding:4px 0 4px 14px;margin-top:18px;line-height:1.6}
+  .grid{display:grid;gap:18px;margin-top:8px}
+  .g2{grid-template-columns:1fr 1fr}.g3{grid-template-columns:repeat(3,1fr)}.g4{grid-template-columns:repeat(4,1fr)}
+  .card{background:linear-gradient(180deg,rgba(20,32,56,.5),rgba(13,20,35,.45));border:1px solid var(--border);
+    border-radius:14px;padding:22px;box-shadow:inset 0 1px 0 rgba(255,255,255,.04),0 16px 38px -22px rgba(0,0,0,.75)}
+  .card h3{font-size:14px;letter-spacing:.05em;text-transform:uppercase;color:var(--cyan);margin-bottom:10px;font-weight:600}
+  .card p{font-size:15px;line-height:1.55}
+  .metric{font-family:var(--mono);font-weight:700;font-variant-numeric:tabular-nums;line-height:1}
+  .big{font-family:var(--mono);font-weight:700;font-size:clamp(64px,12vw,150px);line-height:.9;letter-spacing:-.02em;
+    background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent}
+  ul{list-style:none}li{position:relative;padding-left:26px;margin:12px 0}
+  li::before{content:"▸";position:absolute;left:0;color:var(--cyan);font-size:.9em;top:.1em}
+  .strong{color:var(--strong)} .moderate{color:var(--moderate)} .weak{color:var(--weak)}
+  .seal{display:inline-flex;align-items:center;gap:8px;background:rgba(52,211,153,.08);color:var(--strong);
+    border:1px solid rgba(52,211,153,.4);border-radius:999px;padding:6px 14px;font-size:14px;font-weight:600;margin-top:22px}
+  .flow{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-top:26px}
+  .node{background:var(--surface2);border:1px solid var(--border2);border-radius:10px;padding:12px 16px;font-weight:600;font-size:15px;
+    box-shadow:inset 0 1px 0 rgba(255,255,255,.04)}
+  .node.c{border-color:rgba(34,211,238,.5);color:var(--cyan)}
+  .node.a{border-color:rgba(139,92,246,.5);color:var(--moderate)}
+  .node.q{border-color:rgba(52,211,153,.5);color:var(--strong)}
+  .node.w{border-color:rgba(251,191,36,.5);color:var(--weak)}
+  .arrow{color:var(--dim);font-size:20px}
+  .arrow.loop{color:var(--reject)}
+  .kpi{display:flex;flex-direction:column;gap:6px;background:linear-gradient(180deg,rgba(20,32,56,.4),rgba(13,20,35,.35));
+    border:1px solid var(--border);border-radius:12px;padding:16px 18px}
+  .kpi .metric{font-size:clamp(30px,4vw,46px);color:var(--ink)}
+  .kpi .metric.lime{background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent}
+  .kpi .lbl{font-size:12.5px;color:var(--dim);text-transform:uppercase;letter-spacing:.06em}
+  /* credibility-over-rounds area chart (gradient fill) — matches cover */
+  .chart{position:relative;height:88px;margin:10px 0 4px}
+  .chart svg{width:100%;height:100%;display:block;overflow:visible}
+  .chart .axis{display:flex;justify-content:space-between;font-family:var(--mono);font-size:11px;color:var(--dim);letter-spacing:.04em;margin-top:6px}
+  footer{position:fixed;z-index:2;bottom:22px;left:9vw;right:9vw;display:flex;justify-content:space-between;
+    align-items:center;font-size:12px;color:var(--dim);font-family:var(--mono)}
+  .brandmark{display:flex;align-items:center;gap:10px;font-weight:600;color:var(--muted);font-family:var(--sans)}
+  .dot{width:9px;height:9px;border-radius:50%;background:var(--cyan);box-shadow:0 0 10px var(--cyan)}
+  .progress{position:fixed;top:0;left:0;height:3px;background:var(--grad);z-index:3;transition:width .3s}
+  .hint{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);font-size:11px;color:var(--dim);z-index:2;font-family:var(--mono)}
+  .tag{display:inline-block;font-family:var(--mono);font-size:12px;color:var(--cyan);border:1px solid var(--border2);
+    border-radius:7px;padding:4px 9px;margin:4px 6px 0 0;background:rgba(34,211,238,.05)}
+
+  /* ---- print: one slide per page, 16:9 ---- */
+  @media print{
+    @page{size:1920px 1080px;margin:0}
+    html,body{height:auto;overflow:visible;background:#05080f}
+    body::before,body::after{display:none}
+    .progress,.hint{display:none}
+    footer{position:static;display:none}
+    .deck{height:auto;width:auto;position:static}
+    .slide{position:relative;inset:auto;display:flex !important;
+      width:1920px;height:1080px;min-height:1080px;
+      page-break-after:always;break-after:page;
+      flex-direction:column;justify-content:center;
+      padding:75.6px 172.8px;animation:none}
+    .slide:last-child{page-break-after:avoid;break-after:avoid}
+  }
+</style>
+</head>
+<body>
+<div class="progress" id="prog"></div>
+<div class="deck" id="deck">
+
+  <!-- 1 Title -->
+  <section class="slide active">
+    <div class="eyebrow">字节跳动 CIS · AI 全栈项目挑战赛</div>
+    <h1>明镜 <span class="teal">MingJing</span><br/>证据驱动的竞品分析<br/>多 Agent 协作可信闭环</h1>
+    <p class="lead" style="margin-top:28px">一个“数字调研小组”：采集 · 分析 · 撰写 · 质检四个专职 Agent，
+      从公开信息自动产出<strong>结构化、可溯源、经质检</strong>的竞品报告。</p>
+    <div class="quote">Let LLMs propose. Let code adjudicate. Let evidence decide.<br/>
+      Not another deep-research report — a verifiable competitive-intelligence workflow.</div>
+    <div class="seal">● 确定性 QA 闭环 · LLM 不裁定真值</div>
+  </section>
+
+  <!-- 2 Problem -->
+  <section class="slide">
+    <div class="eyebrow">问题</div>
+    <h2>竞品分析：重复、分散、难追溯</h2>
+    <div class="grid g2">
+      <div class="card"><h3>流程重</h3><p>信息搜集 → 功能对比 → 评价整理 → SWOT → 报告，环节多、重复性高。</p></div>
+      <div class="card"><h3>来源散</h3><p>信息源分散，结论常常<strong>无法回溯到原始出处</strong>，可信度存疑。</p></div>
+      <div class="card"><h3>不一致</h3><p>人工产出格式不统一，难以横向对比、难以规模化复用。</p></div>
+      <div class="card"><h3>易“幻觉”</h3><p>直接让 LLM 写报告：看似完整，<strong>实则无据、不可验证</strong>。</p></div>
+    </div>
+  </section>
+
+  <!-- 3 Solution / DAG -->
+  <section class="slide">
+    <div class="eyebrow">方案 · 多 Agent 编排（LangGraph）</div>
+    <h2>四个专职 Agent，DAG 式任务流转</h2>
+    <div class="flow">
+      <span class="node c">采集 Collector</span><span class="arrow">→</span>
+      <span class="node a">分析 Analyst</span><span class="arrow">→</span>
+      <span class="node q">质检 QA</span><span class="arrow">→</span>
+      <span class="node w">撰写 Writer</span><span class="arrow">→</span>
+      <span class="node">综合 Synthesis</span>
+    </div>
+    <div class="flow"><span class="arrow loop">↺ 质检打回 → 重新采集 / 重新分析（反馈闭环）</span></div>
+    <ul style="margin-top:24px">
+      <li>职责边界清晰、无重叠；<strong>结构化消息传递</strong>（Schema/字段对象），非纯自然语言对话。</li>
+      <li>采集含<strong>问卷设计 / 访谈</strong>证据通道；质检为<strong>确定性规则</strong>（不调用 LLM、无注入风险）。</li>
+    </ul>
+  </section>
+
+  <!-- 4 Real closed loop (money shot) -->
+  <section class="slide">
+    <div class="eyebrow">核心差异 · 非伪闭环</div>
+    <h2>质检打回 → 重采 → <span class="accent">变强</span>，可量化</h2>
+    <div class="grid g2" style="align-items:center">
+      <div>
+        <div class="lbl" style="color:var(--dim);font-family:var(--mono);font-size:13px;letter-spacing:.1em">修正增益 REPAIR_DELTA</div>
+        <div class="big">+42%</div>
+        <div class="chart">
+          <svg viewBox="0 0 360 88" preserveAspectRatio="none" aria-hidden="true">
+            <defs>
+              <linearGradient id="dg" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0" stop-color="#22d3ee" stop-opacity=".42"/>
+                <stop offset="1" stop-color="#3b82f6" stop-opacity="0"/>
+              </linearGradient>
+              <linearGradient id="dl" x1="0" y1="0" x2="1" y2="0">
+                <stop offset="0" stop-color="#22d3ee"/><stop offset="1" stop-color="#8b5cf6"/>
+              </linearGradient>
+            </defs>
+            <path d="M0,70 C70,67 92,60 140,60 C176,60 188,44 230,32 C280,18 312,14 360,9 L360,88 L0,88 Z" fill="url(#dg)"/>
+            <path d="M0,70 C70,67 92,60 140,60 C176,60 188,44 230,32 C280,18 312,14 360,9" fill="none" stroke="url(#dl)" stroke-width="2.6"/>
+            <circle cx="0" cy="70" r="4" fill="#fbbf24"/>
+            <circle cx="140" cy="60" r="4" fill="#fb7185"/>
+            <circle cx="360" cy="9" r="4.6" fill="#818cf8"/>
+          </svg>
+          <div class="axis"><span>R0 · 弱(1)</span><span>QA 打回 · +4 来源</span><span>R1 · 中(5)</span></div>
+        </div>
+        <div class="seal">✓ 真闭环确认</div>
+      </div>
+      <div class="card">
+        <h3>一条结论的真实轨迹（claim 4c892067）</h3>
+        <p style="font-size:16px;line-height:1.8">
+          PASS 1 · <span class="weak">弱</span>（1 来源，“无定价信息”）<br/>
+          ↓ QA 打回 · 证据偏弱<br/>
+          重新取证 <strong>+4 来源</strong><br/>
+          ↓ QA 复核通过<br/>
+          PASS 2 · <span class="moderate">中</span>（5 来源，Notion 分层定价）
+        </p>
+      </div>
+    </div>
+    <div class="quote">QA is not a rubber stamp: failed claims are routed back and improved.</div>
+  </section>
+
+  <!-- 5 Trust / credibility -->
+  <section class="slide">
+    <div class="eyebrow">可信度 · 35% 评分轴的核心</div>
+    <h2>无证据不准入 · 每条结论可溯源</h2>
+    <div class="grid g3">
+      <div class="card"><h3>引用即原文</h3><p>片段必须是来源原文的<strong>逐字子串</strong>（verbatim-or-reject），否则打回。</p></div>
+      <div class="card"><h3>取值可核实</h3><p>结构化取值（定价等）必须能在引用来源中<strong>逐字核实</strong>（VALUE_UNSUPPORTED）。</p></div>
+      <div class="card"><h3>一键溯源</h3><p>报告每句话挂引用 chip → 点开即看<strong>原始来源 + 高亮原文 + 出处哈希</strong>。</p></div>
+    </div>
+    <div class="seal">确定性 QA 门禁 · LLM 不裁定真值 · 写入器投影不变量（仅通过项进报告）</div>
+    <div class="quote">Every accepted claim is tied to source, verifier, and repair history.<br/>
+      The product refuses unsupported depth instead of hallucinating confidence.</div>
+  </section>
+
+  <!-- 6 Schema -->
+  <section class="slide">
+    <div class="eyebrow">知识结构化</div>
+    <h2>竞品知识 Schema：一致、可扩展</h2>
+    <div class="flow" style="margin-top:8px">
+      <span class="tag">定价模型</span><span class="tag">功能树</span><span class="tag">用户画像</span>
+      <span class="tag">用户口碑</span><span class="tag">SWOT</span>
+    </div>
+    <ul style="margin-top:22px">
+      <li>Agent 产出<strong>严格符合预定义 Schema</strong>，字段完整、格式一致。</li>
+      <li>竞品 × 字段<strong>证据强度热力矩阵</strong>，按 强/中/弱 着色，缺口如实标注。</li>
+      <li><strong>换领域</strong>下拉（default / ai_agent / hr…）— config 驱动、可换行业可换竞品。</li>
+    </ul>
+  </section>
+
+  <!-- 7 Observability -->
+  <section class="slide">
+    <div class="eyebrow">技术深度 · 工程完整度（25%）</div>
+    <h2>“给我看你的工作” — 全程可观测</h2>
+    <div class="grid g3">
+      <div class="card"><h3>每步可查</h3><p>每个 Agent 的 <strong>Prompt / 输入 / 输出 / Token</strong> 均有日志可追溯（密钥脱敏）。</p></div>
+      <div class="card"><h3>执行 DAG</h3><p>9 节点实时状态 + <strong>打回重采回边</strong>可视化；可跳转 LangSmith 外部 trace。</p></div>
+      <div class="card"><h3>幻觉抑制</h3><p>引用强制 + 取值核实 + 确定性质检 + append-only 版本留痕。</p></div>
+    </div>
+    <ul style="margin-top:18px"><li>端到端：采集 → 编排 → 知识存储(SQLite) → FastAPI → React 工作台，现场可演示。</li></ul>
+  </section>
+
+  <!-- 8 Product -->
+  <section class="slide">
+    <div class="eyebrow">业务价值与产品体验（20%）</div>
+    <h2>可信情报 BI 工作台 · 人在闭环</h2>
+    <div class="grid g3">
+      <div class="card"><h3>报告 + 溯源</h3><p>BLUF 结论先行 + SWOT + 对比 + 情报缺口；点引用即溯源。</p></div>
+      <div class="card"><h3>QA 回放</h3><p>看一条结论<strong>被打回 → 补证据 → 变强</strong>的完整回放。</p></div>
+      <div class="card"><h3>人工修正 HITL</h3><p>采纳 / 驳回 / 编辑，写回 produced_by=human，更新人工修正率。</p></div>
+    </div>
+  </section>
+
+  <!-- 9 Business KPIs -->
+  <section class="slide">
+    <div class="eyebrow">可量化的业务闭环</div>
+    <h2>关键指标（示例运行 · 真实数据）</h2>
+    <div class="grid g4" style="margin-top:10px">
+      <div class="kpi"><span class="metric lime">+42%</span><span class="lbl">修正增益</span></div>
+      <div class="kpi"><span class="metric">80%</span><span class="lbl">覆盖率</span></div>
+      <div class="kpi"><span class="metric">100%</span><span class="lbl">引用率 / 溯源度</span></div>
+      <div class="kpi"><span class="metric">60%</span><span class="lbl">准入率</span></div>
+    </div>
+    <div class="grid g4" style="margin-top:26px">
+      <div class="kpi"><span class="metric">4</span><span class="lbl">QA 轮次</span></div>
+      <div class="kpi"><span class="metric">6 条</span><span class="lbl">已验证结论</span></div>
+      <div class="kpi"><span class="metric">0%</span><span class="lbl">人工修正率</span></div>
+      <div class="kpi"><span class="metric">≈16–40h</span><span class="lbl">替代人工（估算）</span></div>
+    </div>
+  </section>
+
+  <!-- 10 Compliance + stack -->
+  <section class="slide">
+    <div class="eyebrow">合规、材料与答辩（10%）+ 技术栈</div>
+    <h2>合规优先 · 工程可复现</h2>
+    <div class="grid g2">
+      <div class="card"><h3>采集合规</h3><p>遵守 robots.txt；<strong>SSRF 防护</strong>（私网/元数据拦截）；问卷/访谈数据<strong>PII 脱敏</strong>。</p></div>
+      <div class="card"><h3>技术栈</h3><p>LangGraph（编排）· FastAPI（后端）· React + Vite + TS（前端）· SQLite(WAL, append-only)。</p></div>
+      <div class="card"><h3>AI 编程协作</h3><p>规格→实现→审查的 AI 辅助开发流程；独立 Codex 评审门禁；提交记录规范。</p></div>
+      <div class="card"><h3>测试</h3><p>883 后端测试 + 314 前端测试；tsc / lint / build 全绿；含 43 例 QA 校准集（P/R/acc 1.00）与 39/39 逐字复核。</p></div>
+    </div>
+  </section>
+
+  <!-- 11 ROADMAP / vision: 证据作战室 / Task-OS -->
+  <section class="slide">
+    <div class="eyebrow">ROADMAP · 产品愿景</div>
+    <h2>From Report Generator to <span class="accent">Evidence War Room</span></h2>
+    <p class="lead" style="max-width:64ch;margin-bottom:6px">下一步：证据作战室 / Task-OS —— 把“委派 → 看 AI 团队干活 → 审查交付物”做成主界面：默认看结果与可信判决，过程按需下钻。</p>
+    <p style="font-family:var(--mono);font-size:12px;color:var(--dim);margin-bottom:14px">Future direction — not expanded in this submission · 仅展示方向，非本期交付</p>
+    <div style="border:1px solid var(--border);border-radius:14px;background:var(--surface);padding:14px;font-family:var(--mono);font-size:12.5px;color:var(--muted)">
+      <div style="display:flex;justify-content:space-between;align-items:center;border:1px solid var(--border);border-radius:8px;padding:8px 12px;background:var(--surface2);margin-bottom:10px">
+        <span style="color:var(--ink)">任务契约 · 调查 Notion 定价 / 用户画像 / SWOT</span>
+        <span style="color:var(--strong)">● 可信判决 +42% · 真闭环确认</span>
+      </div>
+      <div style="display:grid;grid-template-columns:0.9fr 1.45fr 1fr;gap:10px">
+        <div style="border:1px solid var(--border);border-radius:8px;padding:10px">
+          <div style="color:var(--cyan);margin-bottom:6px">AI 团队 ○</div>
+          采集 ◑ · 分析 ◐ · 质检 ● · 撰写 ○<br><span style="color:var(--dim)">谁在干 / 阻塞 / 产物数</span>
+        </div>
+        <div style="border:1px solid var(--border);border-radius:8px;padding:10px">
+          <div style="color:var(--cyan);margin-bottom:6px">作战室时间线 ○</div>
+          正在调查 Notion… 发现 5 条 · 2 条弱被打回<br>弱 → 中 · repair <span style="color:var(--cyan)">+42%</span><br><span style="color:var(--dim)">可拖拽回放</span>
+        </div>
+        <div style="border:1px solid var(--border);border-radius:8px;padding:10px">
+          <div style="color:var(--cyan);margin-bottom:6px">可验收交付物 ●</div>
+          Task Report：BLUF / SWOT / 对比<br><span style="color:var(--dim)">交付 · 追加 · 查看为何被拒</span>
+        </div>
+      </div>
+      <div style="border:1px solid var(--border);border-radius:8px;padding:8px 12px;margin-top:10px;color:var(--dim)">
+        审查层 ◑ —— 交付 / 驳回 / 追加检索 / 回放闭环　·　深层下钻 ○：trace · tokens · 原始证据
+      </div>
+    </div>
+    <div class="flow">
+      <span class="tag" style="color:var(--strong);border-color:var(--strong)">● 已落地：引擎 · 真闭环 · 证据图例 · 看闭环 · 可验收报告</span>
+      <span class="tag" style="color:var(--dim)">○ 路线图：统一任务板 · 团队角色面板 · 可拖拽时间轴</span>
+    </div>
+  </section>
+
+  <!-- 12 Closing -->
+  <section class="slide">
+    <div class="eyebrow">收尾</div>
+    <h1>可信 · 可溯源 · <span class="accent">人在闭环</span></h1>
+    <p class="lead" style="margin-top:24px">明镜不只是“能写报告”，而是<strong>能证明每个结论为何可信</strong>——
+      并在证据不足时如实打回、重采、变强。</p>
+    <div class="flow"><span class="tag">示例运行 run: 4fff4227…</span><span class="tag">repair_delta +42%</span><span class="tag">真闭环确认</span></div>
+  </section>
+
+</div>
+
+<footer>
+  <span class="brandmark"><span class="dot"></span>明镜 MingJing · Evidence Runtime</span>
+  <span id="counter">01 / 11</span>
+</footer>
+<div class="hint">← / → 翻页 · F 全屏</div>
+
+<script>
+  const slides=[...document.querySelectorAll('.slide')];
+  let i=0;
+  function show(n){
+    i=Math.max(0,Math.min(slides.length-1,n));
+    slides.forEach((s,k)=>s.classList.toggle('active',k===i));
+    document.getElementById('counter').textContent=String(i+1).padStart(2,'0')+' / '+String(slides.length).padStart(2,'0');
+    document.getElementById('prog').style.width=((i+1)/slides.length*100)+'%';
+  }
+  document.addEventListener('keydown',e=>{
+    if(e.key==='ArrowRight'||e.key==='PageDown'||e.key===' ')show(i+1);
+    else if(e.key==='ArrowLeft'||e.key==='PageUp')show(i-1);
+    else if(e.key==='Home')show(0);else if(e.key==='End')show(slides.length-1);
+    else if(e.key==='f'||e.key==='F'){if(!document.fullscreenElement)document.documentElement.requestFullscreen();else document.exitFullscreen();}
+  });
+  document.addEventListener('click',e=>{if(e.target.closest('a'))return;show(i+1);});
+  show(0);
+</script>
+</body>
+</html>
