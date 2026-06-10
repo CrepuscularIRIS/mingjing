@@ -1,208 +1,181 @@
-# MingJing — Evidence-Grounded Competitive-Analysis Multi-Agent Runtime
+# MingJing 明镜 — an evidence-*admissible* competitive-analysis runtime
 
-A live, self-correcting research system built on LangGraph. It searches the web,
-has an independent QA agent reject weakly-supported claims, re-collects real
-evidence, and upgrades the claim from **weak → strong** — every conclusion
-clickable to its original source.
+> **The LLM proposes, deterministic code adjudicates, evidence decides.**
+> A self-correcting multi-agent system (built on LangGraph) that searches the web, lets an
+> independent QA agent **reject** weakly-supported claims, **re-collects real evidence**, and
+> upgrades a conclusion from **weak → strong** — and every conclusion in the report is
+> clickable, in 30 seconds, to its original source span and the reason QA admitted it.
+
+Its soul sentence: **"它知道自己什么时候不该自信"** — *it knows when it should not be confident.*
+
+---
+
+## Why it's different
+
+A Deep-Research agent hands you a report you can only **choose to believe**. MingJing hands you
+a **process you can audit**: every claim is graded, weak ones are bounced and re-collected, and
+you can click to verify the verbatim citation. The well-known failure mode of research agents —
+citation *links* are ~94% valid but citation *facts* are only 39–77% accurate — is closed here
+by a hard rule: **a cited snippet must be a verbatim substring of its source, or the claim is
+rejected and re-collected.** Nothing reaches the report on the model's say-so.
+
+The full design philosophy and the theory behind it (verification-for-governance, Verifier's
+Law, the Admiralty/Toulmin lineage, the honest fact/inference ceiling) is in **[AGENTS.md](AGENTS.md)**.
 
 ---
 
 ## Live demo & video
 
-- **Live case-study workbench** (no install — runs in your browser):
+- **Live case-study workbench** (no install — runs in your browser, no login, no backend):
   **https://crepusculariris.github.io/mingjing** — two real completed analyses
-  (Notion × Linear, and a Notion run verified on Doubao-Seed-2.0-lite) replayed as
-  read-only static snapshots: final report, evidence drawer, weak→strong QA replay,
-  and the credibility panel.
+  (Notion × Linear, and a Notion run verified on Doubao-Seed-2.0-lite) replayed as read-only
+  static snapshots: final report, evidence drawer, weak→strong QA replay, credibility panel.
 - **Demo video** (~5m38s, 1080p): attached to the
   [v0.1.0 release](https://github.com/CrepuscularIRIS/mingjing/releases/tag/v0.1.0).
-- **Run it yourself**: `docker compose up --build` (see below).
+- **Run it yourself**: `docker compose up --build` (below).
 
 ---
 
-## What the 6-minute demo shows
+## The money-shot: a real weak→strong loop
 
-**Minute 1 — judge picks competitors.** The frontend presents a supported set of
-SaaS products. Pre-warm has already fired at demo start, so the first run begins
-immediately without a network-cold hang.
+On the flagship run `4fff4227` (Notion × Linear, Chinese), watch a claim repair itself **on
+screen** — twice, in one run:
 
-**Minutes 2-3 — collection + DAG motion.** The activity feed scrolls in real
-time: "Collector fetching g2.com…", "Analyst extracted pricing claim",
-"QA reviewing claims." The LangGraph loop is visibly alive on a 2-second poll;
-no dead air.
+1. **Round 1** produces a `user_sentiment` claim backed by a single weak source. The QA agent —
+   which sees *only the evidence text, never the analyst's reasoning* — scores it **weak** and
+   emits a `WEAK_EVIDENCE` issue + a concrete `RevisionTask`.
+2. The router sends the task **back to the Collector**, which performs a **real additional
+   fetch** (source cap = `1 + revision_round`, so this is genuinely new data, not data held
+   back for show). Sources animate **2 → 4**.
+3. QA re-runs. With two more independent sources, the transparent tier rule fires: the tier
+   upgrades **weak → moderate**. In the *same* run, Linear pricing goes further: **moderate →
+   strong** (2 → 4 sources).
+4. The credibility panel shows **`repair_delta +42%`** and lights the *real-closed-loop /
+   tier-upgrade* seal — a deterministic QA/scoring output, **not** model self-grading. The
+   admission funnel reads **10 proposed → 6 admitted · 4 withheld** (the 4 withheld are kept
+   with their issue codes, never deleted).
 
-**Minutes 3-4 — the weak → strong loop (the core moment).** Round 1 produces a
-`user_sentiment` claim backed by a single source. QA runs its deterministic
-check families (7 → 6 IssueCodes): the snippet-match gate and the source-count gate both flag it. QA emits a
-`WEAK_EVIDENCE` issue and a concrete RevisionTask. The route function sends the
-task back to the Collector. Round 2 performs a **real additional fetch** — not
-data that was withheld — from a second independent domain. QA re-runs. Two
-distinct supporting sources from an authoritative type: the transparent rule
-fires, the tier upgrades to **strong**. The badge animates weak → strong on
-screen. The rule is printed next to the badge in plain English.
-
-**Minute 5 — business insight.** The Final Report leads with an LLM-synthesised
-BLUF brief (竞争态势/机会/风险) over the deterministic claim ledger, with a KPI
-bar showing measured machine time against an industry human-baseline estimate.
-Every claim in the report is clickable to an EvidenceDrawer that scrolls to and
-highlights the exact cited sentence.
-
-**Minute 6 — close.** Fallback: if all live calls fail, `MINGJING_MODE=cache_first`
-auto-downgrades and the demo completes on the pre-recorded cache.
+Reverse-honesty invariant: if **0** claims are admitted, the seal and the speedup UI
+**extinguish**. The system refuses to look good when it isn't.
 
 ---
 
 ## Run with Docker (one command)
 
-The full stack — backend (FastAPI) + frontend (nginx) + SearXNG — boots with **no
-API key** in deterministic `cache_first` mode:
+The full stack — backend (FastAPI) + frontend (nginx) + SearXNG — boots with **no API key** in
+deterministic `cache_first` mode:
 
 ```bash
 docker compose up --build
 # then open http://localhost:5173   (API on http://localhost:8000)
 ```
 
-For live web + LLM analysis, copy `.env.example` → `.env`, set `MINIMAX_API_KEY`
-(and a search key, or use the bundled SearXNG), then run with
-`MINGJING_MODE=live_first docker compose up --build`. Native (non-Docker) setup is
-in the **Quickstart** section below.
+For live web + LLM analysis, copy `.env.example` → `.env`, set `MINIMAX_API_KEY` (and a search
+key, or use the bundled SearXNG), then run with
+`MINGJING_MODE=live_first docker compose up --build`.
 
----
-
-## Current status
-
-| Layer | Status |
-|---|---|
-| Backend (config, DB, graph, 4 agents, QA, scoring, API) | Complete; 883 unit tests passing offline |
-| Frontend (Final Report, QA Replay, Activity Feed, Observability) | Complete; 314 tests (31 files) green; wired to backend |
-| Live run (stress-test model) | Requires `MINIMAX_API_KEY` in `.env`; D0 spike confirmed the key works |
-| Live demo rehearsal / wall-clock confirmation | Pending human |
-| Fallback video | Pending recording |
-| Doubao/Ark | **Full run verified 2026-06-10** (run `33835db0`: 18 llm_calls all on the contest EP; 1 admitted at strong, 4 withheld with codes). No key committed (full git object-store scan, 0 hits); historical shared credentials deactivated (401). Demo default remains the MiniMax stress test. |
-
----
-
-## Quickstart
+### Native (no Docker)
 
 ```bash
-# 1. Install Python deps
-uv sync
-
-# 2. Copy and fill in the environment file
-cp .env.example .env          # then add MINIMAX_API_KEY
-
-# 3. Run offline tests (no key required)
-make test
-
-# 4. Start the backend API (port 8000)
-make api
-
-# 5. Start the frontend dev server (port 5173)
-cd frontend && npm install    # first time only
-make web                      # or: cd frontend && npm run dev
+uv sync              # Python 3.12 deps
+make test            # 883 backend tests — NO API key required (DI fakes)
+make api             # FastAPI on :8000
+make web             # Vite frontend on :5173
 ```
 
-### Starting an analysis run
-
-With both servers running, open `http://localhost:5173`. Either **(Directed Mode)**
-select competitors and click **Analyze**, or **(Discovery Mode)** leave the
-competitor field empty and provide just a *category* (+ market scope) to let the
-system discover the products to analyze. The frontend polls
-`GET /runs/{id}/trace?since=N` every 2 seconds and updates the activity feed in
-real time.
-
-Alternatively, start a run via the API directly:
-
-```bash
-# Directed Mode — you name the competitors:
-curl -X POST http://localhost:8000/runs \
-  -H 'Content-Type: application/json' \
-  -d '{"category":"crm","competitors":["CompetitorA","CompetitorB"],"goal":"pricing and sentiment"}'
-# returns {"run_id": "<hex>"}
-
-# Discovery Mode — empty competitors + a category; a bounded pre-step discovers
-# them (only selects WHICH competitors enter the loop — never feeds previews into
-# evidence). Optional: market_scope, max_competitors, seed_competitors.
-curl -X POST http://localhost:8000/runs \
-  -H 'Content-Type: application/json' \
-  -d '{"category":"团队协作 / 项目管理工具","goal":"pricing and sentiment","market_scope":"global","max_competitors":4}'
-```
-
-### Running the demo timing harness
-
-```bash
-make demo          # runs scripts/demo_timing.py (offline by default)
-MINGJING_TIMING_LIVE=1 make demo-timing   # live path (requires key)
-```
+Offline tests need **no** API key. Full setup, Directed vs Discovery Mode, and the demo timing
+harness: [docs/deployment.md](docs/deployment.md).
 
 ---
 
-## Project layout
+## How it works (60-second tour)
 
 ```
-mingjing/
-  pyproject.toml          # uv project, Python 3.12
-  Makefile                # make test / api / web / demo
-  src/mingjing/           # backend Python package
-    config.py             # env-driven settings
-    db/                   # SQLite WAL, append-only helpers (mixin package)
-    schemas.py            # Pydantic v2 models + 5 field schemas
-    graph.py              # LangGraph StateGraph wiring
-    graph_nodes.py        # live node factories (close over GraphDeps)
-    scoring.py            # transparent 3-tier scorer (PURE)
-    qa/rules.py           # 7 deterministic QA check families → 6 IssueCodes (PURE)
-    qa/route.py           # route() pure function (PURE)
-    agents/               # 4 agents: collector, analyst, qa, writer
-    collector/            # fetch/robots/search/independence/cache
-    llm.py                # MiniMax client + JSON parse/repair
-    trace.py              # log_event / log_llm
-    trace_events.py       # typed trace-event emit helpers
-    api.py                # FastAPI read-only views
-    prewarm.py            # demo-start pre-warm
-    ingest.py             # PII-anonymizing survey/interview ingest
-    vendor/ldr/
-      ATTRIBUTION.md      # D0 spike decision record (LDR not vendored)
-  tests/                  # 883 unit tests
-  frontend/               # React + Vite + TS + Tailwind
-    src/views/            # FinalReport, QAReplay, Observability
-    src/components/       # Badge, ClaimRow, EvidenceDrawer, …
-  data/cache/             # read-only demo cache store
-  scripts/demo_timing.py  # wall-clock timing harness
-  docs/                   # this file + architecture, agent-protocol, deployment, roadmap
+(discover) → intake → plan → collect → analyze → qa → route ─┬→ write → synthesis → END
+                        ↑                                     │
+                        └──────── revise (collect | analyze) ─┘
 ```
+
+Four **scored** agents do the work; orchestration nodes are kept separate:
+
+| Agent | Role |
+|-------|------|
+| **Collector** | web search → robots check → SSRF-guarded fetch → evidence chunks |
+| **Analyst** | one LLM call per field; untrusted web text quarantined in an `<UNTRUSTED>` envelope |
+| **QA** | 7 deterministic checks → 6 IssueCodes, **no LLM** (so prompt-injection can't flip a verdict) |
+| **Writer** | pure projection — templates *only* QA-passed claims; an unbacked claim can never reach the report |
+
+Evidence strength is a transparent **3-tier** rating (strong / moderate / weak) with **no
+confidence decimals** — distinct registrable domains + authoritative source types + a
+contradiction flag. Simulated survey data is badged and **excluded from all credibility math**.
+Claims are **append-only** (versioned, never updated), so the full history — including human
+corrections — is preserved and auditable. Deep dive: **[AGENTS.md](AGENTS.md)**.
 
 ---
 
-## How it was built / AI-assisted development
+## Verified status (reproducible locally)
 
-MingJing was built with AI-assisted tooling throughout. For a factual account of
-the development method, AI collaboration evidence, and what is independently
-verifiable from this repo (git history, Superpowers plan docs, QA gate
-screenshots, Codex review-gate config), see
-[docs/AI-ASSISTED-DEV.md](docs/AI-ASSISTED-DEV.md).
+| Gate | Result | Command |
+|---|---|---|
+| Backend tests | **883 passed**, exit 0 | `make test` |
+| Frontend tests | **314 passed** across 31 files, 0 `act()` warnings | `cd frontend && npx vitest run` |
+| Frontend typecheck | `npx tsc -b` exit 0 (use `-b`, not `--noEmit`) | `cd frontend && npx tsc -b` |
+| Production build | exit 0 | `make web-build` |
+| File-size rule | no source file > 800 lines | — |
+
+Canonical runs: **`4fff4227`** (Notion × Linear, +42% repair, 强1·中5, coverage 80%) ·
+**`33835db0`** (Notion on Doubao-Seed-2.0-lite, 18 `llm_calls` all on the official endpoint) ·
+**`3775d21a`** (single-competitor depth, +38%).
 
 ---
 
 ## Tech stack
 
-- **Backend:** Python 3.12, uv, FastAPI, LangGraph, Pydantic v2, stdlib `sqlite3` (WAL)
-- **LLM:** MiniMax-M2.7 via OpenAI SDK at `https://api.minimaxi.com/v1` — deliberately
-  run as a *high-hallucination stress test* for the deterministic QA gate. The gate is
-  provider-agnostic and **verified on Doubao-Seed-2.0-lite** (full run `33835db0`,
-  2026-06-10 — same strict gate behavior under the official contest model).
-- **Frontend:** React + Vite + TypeScript + Tailwind + reactflow + recharts (zero-CDN)
-- **Search:** duckduckgo-search (keyless)
-- **DB:** single-file SQLite (WAL + busy_timeout), append-only by `run_id/round/claim_id`
+- **Backend:** Python 3.12, uv, FastAPI, LangGraph (StateGraph), Pydantic v2, stdlib `sqlite3`
+  (WAL + single-writer lock), OpenAI-compatible LLM client.
+- **LLM:** MiniMax-M2.7 — run deliberately as a *high-hallucination stress test* for the
+  provider-agnostic gate; the gate is **verified on Doubao-Seed-2.0-lite** (full run
+  `33835db0`). Config-level switch; no RAG / vector DB by design.
+- **Frontend:** React 19 + Vite + TypeScript + Tailwind + shadcn/ui + reactflow + recharts
+  (zero CDN).
+- **Search:** keyless/trusted providers + self-hosted SearXNG (`deploy/searxng/`).
+- **Video:** standalone Remotion project in [`mingjing-video/`](mingjing-video/) (renders the
+  v0.1.0 demo video).
 
 ---
 
+## Honest boundaries
+
+We say these plainly, because honesty *is* the product:
+
+- Metrics (`repair_delta` / `strong_rate` / `coverage`) are **evidence-strength proxies, not
+  factual accuracy** — "traceable & verifiable," never "true about the world."
+- The online demo is a **read-only** static replay; new analyses / human corrections need the
+  local `docker compose up`.
+- Run-level concurrency scheduler, dynamic schema evolution, voting/self-eval, and a real
+  LangSmith deep-link are **deferred — not claimed as built** ([docs/ROADMAP.md](docs/ROADMAP.md)).
+
+---
+
+## Repo layout
+
+```
+src/mingjing/         # backend: graph, agents, qa, scoring, api, collector, domains
+frontend/             # React 19 + Vite workbench
+mingjing-video/       # standalone Remotion demo-video project
+docs/                 # architecture, agent-protocol, deployment, compliance, defense, runbook
+deploy/searxng/       # self-hosted keyless search (docker compose)
+AGENTS.md             # ← the full design & theory reference
+```
+
 ## See also
 
-- `docs/architecture.md` — loop diagram, agent responsibilities, trust mechanics
-- `docs/agent-protocol.md` — typed message contracts, RunState, trace vocabulary
-- `docs/deployment.md` — env vars, live vs cache mode, SSRF/robots posture
-- `docs/ROADMAP.md` — deferred items and honest pending-human tasks
-- `docs/judge-qa.md` — prepared answers to judge questions
+- **[AGENTS.md](AGENTS.md)** — full design & theory (the *why*)
+- [docs/architecture.md](docs/architecture.md) — loop diagram, agents, trust mechanics
+- [docs/agent-protocol.md](docs/agent-protocol.md) — typed contracts, RunState, trace vocabulary
+- [docs/COMPLIANCE.md](docs/COMPLIANCE.md) — robots / SSRF / PII posture, honest gaps
+- [docs/DEFENSE-NARRATIVE.md](docs/DEFENSE-NARRATIVE.md) — the defense main line
+- [docs/SELF-AUDIT.md](docs/SELF-AUDIT.md) — gap-by-gap self-score
 
 ---
 
