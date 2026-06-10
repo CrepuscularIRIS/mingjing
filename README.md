@@ -7,6 +7,19 @@ clickable to its original source.
 
 ---
 
+## Live demo & video
+
+- **Live case-study workbench** (no install — runs in your browser):
+  **https://crepusculariris.github.io/mingjing** — two real completed analyses
+  (Notion × Linear, and a Notion run verified on Doubao-Seed-2.0-lite) replayed as
+  read-only static snapshots: final report, evidence drawer, weak→strong QA replay,
+  and the credibility panel.
+- **Demo video** (~5m38s, 1080p): attached to the
+  [v0.1.0 release](https://github.com/CrepuscularIRIS/mingjing/releases/tag/v0.1.0).
+- **Run it yourself**: `docker compose up --build` (see below).
+
+---
+
 ## What the 6-minute demo shows
 
 **Minute 1 — judge picks competitors.** The frontend presents a supported set of
